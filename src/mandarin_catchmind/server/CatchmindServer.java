@@ -1,4 +1,8 @@
-package catchmind;
+package mandarin_catchmind.server;
+
+import mandarin_catchmind.server.CatchmindServer.ClientInfo;
+import mandarin_catchmind.client.CatchmindClient.TimerThread;
+import mandarin_catchmind.constants.Constants;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,8 +10,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
-
-import catchmind.CatchmindServer.ClientInfo;
 
 public class CatchmindServer implements Constants {
 

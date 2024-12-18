@@ -1,4 +1,4 @@
-package catchmind;
+package mandarin_catchmind.constants;
 
 public interface Constants {
 	static final String DELIMETER = "&";

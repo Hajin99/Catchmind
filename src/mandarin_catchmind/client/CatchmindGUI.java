@@ -1,4 +1,4 @@
-package catchmind;
+package mandarin_catchmind.client;
 
 import java.awt.Color;
 import java.awt.Dimension;

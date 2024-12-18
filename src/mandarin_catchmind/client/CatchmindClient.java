@@ -1,4 +1,4 @@
-package catchmind;
+package mandarin_catchmind.client;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -21,7 +21,8 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import catchmind.CatchmindClient.TimerThread;
+import mandarin_catchmind.client.CatchmindClient.TimerThread;
+import mandarin_catchmind.constants.Constants;
 
 public class CatchmindClient extends CatchmindGUI implements Runnable, Constants {
 	   
@@ -53,7 +54,7 @@ public class CatchmindClient extends CatchmindGUI implements Runnable, Constants
 	   TimerThread timer;
 	   
 	   //제한 시간 표시
-	   class TimerThread extends Thread {
+	   public class TimerThread extends Thread {
 	      
 	      CatchmindClient client;
 	      boolean run = true;
