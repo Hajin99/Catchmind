@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import mandarin_catchmind.client.CatchmindClient.TimerThread;
@@ -47,10 +48,10 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private int TurnCount = 0;
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
-	   public CatchmindClient(String roomName, int portNumber) {
+	   public CatchmindClient(String roomName) {
 		  super(roomName);
-		  this.portNumber=portNumber;
-		  
+		  //this.portNumber=portNumber;
+		  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	      addWindowListener(this);
 	      connectSocket();
 	   }
@@ -107,12 +108,13 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	   public void connectSocket() {
 	      try {
-	        socket = new Socket("127.0.0.1", portNumber); 
+	        socket = new Socket("127.0.0.1", 5000); 
 
 	        //서버에 정보를 보내는 OutputStream, 정보를 받는 InputStream 연결
 	        writer = new PrintWriter(socket.getOutputStream(), true); 
 	        br = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-
+	        System.out.println("포트 " + portNumber + "에 연결 성공!");
+	        		
 	        Thread thread = new Thread(this); 
 	        thread.start();
 
@@ -122,6 +124,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	      } catch (IOException e) {
 	    	  //서버와 연결 실패시
+	    	  System.out.println("포트 " + portNumber + "에 연결 실패: " + e.getMessage());
 	    	  System.out.println("서버와 연결을 실패했습니다.");
 	    	  e.printStackTrace();
 	      }

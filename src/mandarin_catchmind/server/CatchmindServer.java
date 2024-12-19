@@ -1,10 +1,11 @@
 package mandarin_catchmind.server;
 
-//import mandarin_catchmind.server.CatchmindServer.ClientInfo;
+import mandarin_catchmind.server.CatchmindServer.ClientInfo;
 import mandarin_catchmind.client.CatchmindClient.TimerThread;
 import mandarin_catchmind.constants.Constants;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -74,10 +75,10 @@ public class CatchmindServer implements Constants {
 				System.out.println("클라이언트" + (vcClient.size()) + "(과)와 연결되었습니다.");
 			}
 
-			System.out.println("모든 클라이언트 연결 완료!");
+			System.out.println("모든 클라이언트 연결 완료");
 
 		} catch (Exception e) {
-			System.out.println("연결이 되지 않았습니다.");
+			System.out.println("연결안됨");
 		}
 	}
 
@@ -327,6 +328,6 @@ public class CatchmindServer implements Constants {
 	}
 
 	public static void main(String[] args) {
-		new CatchmindServer();
+		//new CatchmindServer();
 	}
 }

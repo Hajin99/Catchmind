@@ -125,14 +125,14 @@ public class MakeRoom extends JPanel {
 		        makeButton.addActionListener(new ActionListener() {
 		            public void actionPerformed(ActionEvent e) {
 		            	String roomName = nameField.getText();
-		            	int portNumberN = Integer.parseInt(portNumber.getText());
+		            	//int portNumberN = Integer.parseInt(portNumber.getText());
 		            	v.add(roomName);
 		            	roomList.setListData(v);
                         nameField.setText(""); // 입력 필드 초기화
                         portNumber.setText("");
                         //MyGameScreen myGameScreen = new MyGameScreen(roomName);
                         //myGameScreen.setVisible(true);
-                        CatchmindClient client = new CatchmindClient(roomName, portNumberN);
+                        CatchmindClient client = new CatchmindClient(roomName);
                         client.setVisible(true);
 		            }
 		        });
