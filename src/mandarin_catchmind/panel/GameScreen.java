@@ -1,4 +1,4 @@
-package mandarin_catchmind.client;
+package mandarin_catchmind.panel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,7 +24,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-public abstract class CatchmindGUI extends JFrame implements ActionListener, MouseListener, MouseMotionListener, WindowListener, KeyListener {
+public abstract class GameScreen extends JFrame implements ActionListener, MouseListener, MouseMotionListener, WindowListener, KeyListener {
 
 	private Graphics g;
 	protected Graphics2D graphic;
@@ -58,18 +58,18 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	protected Color CurrentColor = Color.BLACK;
 	protected Color CurrentColorMemory;
 
-	JLabel[] NameLabelArr = new JLabel[4];
-	JLabel[] ScoreLabelArr = new JLabel[4];
-	JTextArea[] MessageTaArr = new JTextArea[4];
+	protected JLabel[] NameLabelArr = new JLabel[4];
+	protected JLabel[] ScoreLabelArr = new JLabel[4];
+	protected JTextArea[] MessageTaArr = new JTextArea[4];
 
-	JLabel TurnLabel;
-	JLabel TopLabel;
-	JLabel TimerLabel;
+	protected JLabel TurnLabel;
+	protected JLabel TopLabel;
+	public JLabel TimerLabel;
 
-	JTextField MessageTf = new JTextField();
+	protected JTextField MessageTf = new JTextField();
 	
-	JTextArea newChatArea = new JTextArea();
-    JTextField newMessageTf = new JTextField();
+	protected JTextArea newChatArea = new JTextArea();
+    protected JTextField newMessageTf = new JTextField();
     
     private ImageIcon newSendBtnIcon = new ImageIcon("./image/button.png");
     JButton newSendBtn = new JButton("보내기", newSendBtnIcon);
@@ -488,10 +488,12 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	    return PaintPanel;
 	}
 
-
+	private String roomName;
+	
 	//위치 설정
-	public CatchmindGUI() {
-
+	public GameScreen(String roomName) {
+		super(roomName);
+		this.roomName=roomName;
 		JPanel Player1 = getChatPanel(0);
 		Player1.setBounds(0, 0, 300, 167);
 
@@ -518,13 +520,13 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 		JPanel newChatPanel = getNewChatPanel();
         newChatPanel.setBounds(880, 0, 300, 700);
 
-		setTitle("캐치마인드");
+		//setTitle("캐치마인드");
 		setSize(new Dimension(1200, 735));
-		setResizable(false);
-		setLocationRelativeTo(null);
+		//setResizable(false);
+		//setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-		getContentPane().setBackground(new Color(255, 230, 170));
+		//getContentPane().setBackground(new Color(255, 230, 170));
 
 		setLayout(null);
 		add(Player1);

@@ -23,8 +23,9 @@ import javax.swing.JOptionPane;
 
 import mandarin_catchmind.client.CatchmindClient.TimerThread;
 import mandarin_catchmind.constants.Constants;
+import mandarin_catchmind.panel.GameScreen;
 
-public class CatchmindClient extends CatchmindGUI implements Runnable, Constants {
+public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   
 	   private Socket socket;
 	   private BufferedReader br;
@@ -46,7 +47,6 @@ public class CatchmindClient extends CatchmindGUI implements Runnable, Constants
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
 	   public CatchmindClient() {
-	      
 	      addWindowListener(this);
 	      connectSocket();
 	   }
