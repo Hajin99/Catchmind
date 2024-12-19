@@ -23,9 +23,9 @@ public interface Constants {
 	static final String COLOR = "COLOR";
 	static final String THICKNESS = "THICKNESS";
 	   
-	//플레이어 수 설정
+	//플레이어 수 설정(테스트를 위해 2명으로 설정, 최대 4명까지 가능)
 	static final int PLAYER_COUNT = 2;  
-	//턴 수 설정
+	//턴 수 설정(테스트를 위해 4턴으로 설정, 최대 10턴)
 	static final int TURN_COUNT = 4;  
 	//제한시간 설정
 	static final int SEC = 30;  

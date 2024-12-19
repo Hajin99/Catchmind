@@ -71,14 +71,13 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	protected JTextArea newChatArea = new JTextArea();
     protected JTextField newMessageTf = new JTextField();
     
-    private ImageIcon newSendBtnIcon = new ImageIcon("./image/button.png");
+    private ImageIcon newSendBtnIcon = new ImageIcon(getClass().getResource("/images/button.png"));
     JButton newSendBtn = new JButton("보내기", newSendBtnIcon);
     
-	private ImageIcon PlayerBackgroundIcon = new ImageIcon("./image/playerbackground.png");
-	private ImageIcon ChatBackgroundIcon = new ImageIcon("./image/chatbackground.png");
+	private ImageIcon PlayerBackgroundIcon = new ImageIcon(getClass().getResource("/images/playerbackground.png"));
+	private ImageIcon ChatBackgroundIcon = new ImageIcon(getClass().getResource("/images/chatbackground.png"));
 	private Font BigFont = new Font("1훈솜사탕 Regular", Font.PLAIN, 24);
 	private Font SmallFont = new Font("1훈솜사탕 Regular", Font.PLAIN, 16);
-	
 	
 	//채팅창 패널
     public JPanel getNewChatPanel() {
@@ -98,8 +97,8 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
         JScrollPane newScrollPane = new JScrollPane(newChatArea);
         newScrollPane.setBounds(30, 70, 260, 530);
         newScrollPane.setBorder(null);
-
-        ImageIcon textFieldIcon = new ImageIcon("./image/textbackground.png");
+        
+        ImageIcon textFieldIcon = new ImageIcon(getClass().getResource("/images/textbackground.png"));
         newMessageTf = new JTextField() {
 	        @Override
 	        protected void paintComponent(Graphics g) {
@@ -107,15 +106,16 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	            super.paintComponent(g);
 	        }
 	    };
+	    
 	    newMessageTf.setBorder(null);
-	    newMessageTf.setOpaque(false); // 배경 투명
+	    newMessageTf.setOpaque(false); 
 	    newMessageTf.addKeyListener(this);
         newMessageTf.setBounds(30, 650, 180, 30);
         
-        newSendBtn.setHorizontalTextPosition(SwingConstants.CENTER); // 텍스트 위치 조정
-        newSendBtn.setVerticalTextPosition(SwingConstants.BOTTOM); // 텍스트 위치 조정
+        newSendBtn.setHorizontalTextPosition(SwingConstants.CENTER); 
+        newSendBtn.setVerticalTextPosition(SwingConstants.BOTTOM); 
         newSendBtn.setOpaque(false); 
-        newSendBtn.setContentAreaFilled(false); // 내용 영역을 투명하게 설정
+        newSendBtn.setContentAreaFilled(false); 
         newSendBtn.setBorderPainted(false);
         newSendBtn.setFocusPainted(false);
 
@@ -170,48 +170,13 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		return panel;
 	}
 
-	/*
-	//정답패널 전송 버튼 클릭시 내용 전송
-	public JPanel getChatInsertPanel() {
-	    JPanel panel = new JPanel();
-
-	    // 정답 입력란에 배경 이미지 적용
-	    ImageIcon textFieldIcon = new ImageIcon("./image/textbackground.png");
-	    MessageTf = new JTextField() {
-	        @Override
-	        protected void paintComponent(Graphics g) {
-	            g.drawImage(textFieldIcon.getImage(), 0, 0, getWidth(), getHeight(), null);
-	            super.paintComponent(g);
-	        }
-	    };
-	    MessageTf.setOpaque(false); // 배경 투명
-	    MessageTf.addKeyListener(this);
-
-	    // 전송 버튼에 배경 이미지 적용
-	    ImageIcon sendButtonIcon = new ImageIcon("./image/button.png");
-	    JButton sendBtn = new JButton(sendButtonIcon);
-	    sendBtn.setOpaque(false);
-	    sendBtn.setContentAreaFilled(false);
-	    sendBtn.setBorderPainted(false);
-	    sendBtn.addActionListener(this);
-
-	    // 레이아웃 설정
-	    panel.setLayout(new BorderLayout());
-	    panel.add(MessageTf, BorderLayout.CENTER);
-	    panel.add(sendBtn, BorderLayout.EAST);
-
-	    return panel;
-	}
-	*/
-
 	//턴, 제한시간 상태 표시 패널
 	public JPanel getStatusBarPanel() {
 	    JPanel panel = new JPanel();
 	    panel.setOpaque(false);
 	    panel.setLayout(null);
 
-	    // TurnLabel에 배경 이미지 추가
-	    ImageIcon turnBackgroundIcon = new ImageIcon("./image/orangeimg.png");
+	    ImageIcon turnBackgroundIcon = new ImageIcon(getClass().getResource("/images/orangeimg.png"));
 	    TurnLabel = new JLabel("-/10 턴") {
 	        @Override
 	        protected void paintComponent(Graphics g) {
@@ -220,12 +185,11 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	        }
 	    };
 	    TurnLabel.setFont(SmallFont);
-	    TurnLabel.setHorizontalAlignment(JLabel.CENTER); // 텍스트 가운데 정렬
-	    TurnLabel.setBounds(30, 10, 100, 60); // 크기를 배경 이미지에 맞게 조정
+	    TurnLabel.setHorizontalAlignment(JLabel.CENTER);
+	    TurnLabel.setBounds(30, 10, 100, 60); 
 	    TurnLabel.setOpaque(false);
 
-	    // TimerLabel에 배경 이미지 추가
-	    ImageIcon timerBackgroundIcon = new ImageIcon("./image/orangeimg.png");
+	    ImageIcon timerBackgroundIcon = new ImageIcon(getClass().getResource("/images/orangeimg.png"));
 	    TimerLabel = new JLabel("30 초") {
 	        @Override
 	        protected void paintComponent(Graphics g) {
@@ -234,12 +198,11 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	        }
 	    };
 	    TimerLabel.setFont(SmallFont);
-	    TimerLabel.setHorizontalAlignment(JLabel.CENTER); // 텍스트 가운데 정렬
-	    TimerLabel.setBounds(450, 10, 100, 60); // 크기를 배경 이미지에 맞게 조정
+	    TimerLabel.setHorizontalAlignment(JLabel.CENTER);
+	    TimerLabel.setBounds(450, 10, 100, 60);
 	    TimerLabel.setOpaque(false);
 
-	    // 중앙의 TopLabel
-	    ImageIcon titleBackgroundIcon = new ImageIcon("./image/title.png");
+	    ImageIcon titleBackgroundIcon = new ImageIcon(getClass().getResource("/images/title.png"));
 	    TopLabel = new JLabel() {
 	    	@Override
 	    	protected void paintComponent(Graphics g) {
@@ -256,12 +219,10 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	    return panel;
 	}
 
-
-	//도구 패널
-	//펜의 굵기 선택 가능(대,중,소)
-	//지우개의 굵기 선택 가능(대,중,소)
-	//그림판 전체 지우기 가능
-	//펜의 색상 선택 가능(빨,주,노,초,파,검)
+	//펜의 굵기 선택(대,중,소)
+	//지우개의 굵기 선택(대,중,소)
+	//펜의 색상 선택(빨,주,노,초,파,검)
+	//그림판 전체 지우기
 	public JPanel getInfoPanel() {
 
 		JPanel leftPanel1 = new JPanel();
@@ -269,9 +230,9 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		leftPanel1.setLayout(new GridLayout(1, 3));
 		leftPanel1.setOpaque(false);
 		
-		ImageIcon bigpenIcon = new ImageIcon("./image/lsize.png");
-		ImageIcon mediumpenIcon = new ImageIcon("./image/msize.png");
-		ImageIcon smallpenIcon = new ImageIcon("./image/ssize.png");
+		ImageIcon bigpenIcon = new ImageIcon(getClass().getResource("/images/lsize.png"));
+		ImageIcon mediumpenIcon = new ImageIcon(getClass().getResource("/images/msize.png"));
+		ImageIcon smallpenIcon = new ImageIcon(getClass().getResource("/images/ssize.png"));
 		
 		BigPencil = new JButton(bigpenIcon);
 		BigPencil.setOpaque(false);  
@@ -304,9 +265,9 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		leftPanel2.setLayout(new GridLayout(1, 3));
 		leftPanel2.setOpaque(false);
 		
-		ImageIcon bigeraserIcon = new ImageIcon("./image/lsize.png");
-		ImageIcon mediumeaserIcon = new ImageIcon("./image/msize.png");
-		ImageIcon smalleraserIcon = new ImageIcon("./image/ssize.png");
+		ImageIcon bigeraserIcon = new ImageIcon(getClass().getResource("/images/lsize.png"));
+		ImageIcon mediumeaserIcon = new ImageIcon(getClass().getResource("/images/msize.png"));
+		ImageIcon smalleraserIcon = new ImageIcon(getClass().getResource("/images/ssize.png"));
 
 
 		BigEraser = new JButton(bigeraserIcon);
@@ -338,7 +299,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		JPanel centerPanel = new JPanel();
 		centerPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK), "전체삭제", TitledBorder.CENTER, TitledBorder.TOP));
 		centerPanel.setOpaque(false);
-		ImageIcon clearIcon = new ImageIcon("./image/allclear.png");
+		ImageIcon clearIcon = new ImageIcon(getClass().getResource("/images/allclear.png"));
 		ClearEraser = new JButton(clearIcon);
 		ClearEraser.setOpaque(false); 
 		ClearEraser.setContentAreaFilled(false);  
@@ -347,7 +308,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		ClearEraser.addActionListener(this);
 		centerPanel.add(ClearEraser);
 
-		ImageIcon ColorBackgroundIcon = new ImageIcon("./image/colorboard.png");
+		ImageIcon ColorBackgroundIcon = new ImageIcon(getClass().getResource("/images/colorboard.png"));
 		JPanel rightPanel = new JPanel() {
 			@Override
 			public void paintComponent(Graphics g) {
@@ -356,16 +317,17 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 				super.paintComponent(g);
 			}
 		};
+		
 		rightPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK), "색상선택", TitledBorder.CENTER, TitledBorder.TOP));
 		rightPanel.setLayout(new GridLayout(2, 3));
 		rightPanel.setOpaque(false);
 		
-		ImageIcon redIcon = new ImageIcon("./image/redcolor.png");
-		ImageIcon orangeIcon = new ImageIcon("./image/orangecolor.png");
-		ImageIcon yellowIcon = new ImageIcon("./image/yellowcolor.png");
-		ImageIcon greenIcon = new ImageIcon("./image/greencolor.png");
-		ImageIcon blueIcon = new ImageIcon("./image/bluecolor.png");
-		ImageIcon blackIcon = new ImageIcon("./image/blackcolor.png");
+		ImageIcon redIcon = new ImageIcon(getClass().getResource("/images/redcolor.png"));
+		ImageIcon orangeIcon = new ImageIcon(getClass().getResource("/images/orangecolor.png"));
+		ImageIcon yellowIcon = new ImageIcon(getClass().getResource("/images/yellowcolor.png"));
+		ImageIcon greenIcon = new ImageIcon(getClass().getResource("/images/greencolor.png"));
+		ImageIcon blueIcon = new ImageIcon(getClass().getResource("/images/bluecolor.png"));
+		ImageIcon blackIcon = new ImageIcon(getClass().getResource("/images/blackcolor.png"));
 		
 	    RedPen = new JButton() {
 	    	@Override
@@ -475,12 +437,12 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	        @Override
 	        protected void paintComponent(Graphics g) {
 	            super.paintComponent(g);
-	            ImageIcon backgroundIcon = new ImageIcon("./image/drawingboardimg.png");
+	            ImageIcon backgroundIcon = new ImageIcon(getClass().getResource("/images/drawingboardimg.png"));
 	            g.drawImage(backgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), null);
 	        }
 	    };
 
-	    PaintPanel.setBackground(Color.WHITE); // 기본 배경 색 설정 (배경 이미지가 없다면 기본 배경 색 사용)
+	    PaintPanel.setBackground(Color.WHITE); //기본 배경 색 흰색으로 설정
 	    PaintPanel.setPreferredSize(new Dimension(400, 600));
 	    PaintPanel.addMouseListener(this);
 	    PaintPanel.addMouseMotionListener(this);
@@ -488,8 +450,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	    return PaintPanel;
 	}
 
-	//private String title;
-	
+
 	//위치 설정
 	public GameScreen(String title) {
 		super(title);
@@ -505,9 +466,6 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 
 		JPanel Player4 = getChatPanel(3);
 		Player4.setBounds(0, 501, 300, 167);
-
-		//JPanel Answer = getChatInsertPanel();
-		//Answer.setBounds(0, 668, 300, 32);
 
 		JPanel TopBar = getStatusBarPanel();
 		TopBar.setBounds(300, 0, 600, 70);
@@ -533,7 +491,6 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		add(Player2);
 		add(Player3);
 		add(Player4);
-		//add(Answer);
 		add(TopBar);
 		add(PaintPanel);
 		add(infoPanel);

@@ -27,6 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import mandarin_catchmind.client.CatchmindClient;
+
 public class MakeRoom extends JPanel {
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
 	//private List <String> roomNameList = new ArrayList<>();
@@ -64,7 +66,7 @@ public class MakeRoom extends JPanel {
 	    protected void paintComponent(Graphics g) {
 	        super.paintComponent(g);
 	        // 패널 크기에 맞춰 이미지를 배경으로 그립니다.
-	        g.drawImage(homeImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
+	        g.drawImage(bageImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
 	    }
 	} //RoomPanel끝
 	
@@ -88,7 +90,7 @@ public class MakeRoom extends JPanel {
 			private JLabel nameLabel;
 			
 			public PortPanel(){
-				this.setLayout(new GridLayout(3,1));
+				this.setLayout(new GridLayout(5,1));
 				
 				nameLabel = new JLabel(textRoom);
 				nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -101,6 +103,14 @@ public class MakeRoom extends JPanel {
 				nameField.setBorder(null);
 				nameField.setBounds(850, 200, 200, 50);
 		        add(nameField);
+		        
+		        //JPanel portPanel = new JPanel(); // 기본 FlowLayout 사용
+				JLabel pt = new JLabel("포트 번호 입력 ↓ ");
+				pt.setHorizontalAlignment(SwingConstants.CENTER);
+				JTextField portNumber = new JTextField(10); // 너비 10 칸
+				//portPanel.add(portNumber);
+				add(pt);
+				add(portNumber);
 		        
 		        makeButton = new JButton(makeRoom);
 		        makeButton.setFocusPainted(false); 
@@ -115,12 +125,15 @@ public class MakeRoom extends JPanel {
 		        makeButton.addActionListener(new ActionListener() {
 		            public void actionPerformed(ActionEvent e) {
 		            	String roomName = nameField.getText();
+		            	int portNumberN = Integer.parseInt(portNumber.getText());
 		            	v.add(roomName);
 		            	roomList.setListData(v);
                         nameField.setText(""); // 입력 필드 초기화
-                        MyGameScreen myGameScreen = new MyGameScreen(roomName);
-                        myGameScreen.setVisible(true);
-                        
+                        portNumber.setText("");
+                        //MyGameScreen myGameScreen = new MyGameScreen(roomName);
+                        //myGameScreen.setVisible(true);
+                        CatchmindClient client = new CatchmindClient(roomName, portNumberN);
+                        client.setVisible(true);
 		            }
 		        });
 		        add(makeButton);
@@ -129,7 +142,7 @@ public class MakeRoom extends JPanel {
 		    protected void paintComponent(Graphics g) {
 		        super.paintComponent(g);
 		        // 패널 크기에 맞춰 이미지를 배경으로 그립니다.
-		        g.drawImage(bageImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
+		        g.drawImage(homeImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
 		    }
 		}
 		//PortPanel끝
@@ -140,6 +153,8 @@ public class MakeRoom extends JPanel {
 	//EastPanel끝
 
 	//MandarinPanelt시작
+	
+			
 			class MandarinPanel extends JPanel {
 				private ImageIcon orange = new ImageIcon(getClass().getResource("/images/orange.png"));
 				
@@ -154,7 +169,7 @@ public class MakeRoom extends JPanel {
 			    protected void paintComponent(Graphics g) {
 			        super.paintComponent(g);
 			        // 패널 크기에 맞춰 이미지를 배경으로 그립니다.
-			        g.drawImage(homeImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
+			        g.drawImage(bageImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
 			    }
 			}//MandarinPanel끝
 	

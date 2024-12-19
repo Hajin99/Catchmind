@@ -1,6 +1,6 @@
 package mandarin_catchmind.server;
 
-import mandarin_catchmind.server.CatchmindServer.ClientInfo;
+//import mandarin_catchmind.server.CatchmindServer.ClientInfo;
 import mandarin_catchmind.client.CatchmindClient.TimerThread;
 import mandarin_catchmind.constants.Constants;
 
@@ -19,7 +19,7 @@ public class CatchmindServer implements Constants {
 
 	private String[] Nicknames = new String[PLAYER_COUNT];
 
-	//제시어 20개 설정
+	//제시어 설정
 	private String Words[] = 
 		{
 				"곰", "토끼", "강아지", "고양이", "호랑이", "거북이", "곰", "펭귄", "선인장", "꽃", 
@@ -39,7 +39,7 @@ public class CatchmindServer implements Constants {
 		makeWordsIdx();
 	}
 
-	//제시어 20개 중에 랜덤으로 출제
+	//제시어 랜덤으로 출제
 	public void makeWordsIdx() {
 
 		for (int i = 0; i < TURN_COUNT; ++i) {
@@ -74,10 +74,10 @@ public class CatchmindServer implements Constants {
 				System.out.println("클라이언트" + (vcClient.size()) + "(과)와 연결되었습니다.");
 			}
 
-			System.out.println("모든 클라이언트 연결 완료");
+			System.out.println("모든 클라이언트 연결 완료!");
 
 		} catch (Exception e) {
-			System.out.println("연결안됨");
+			System.out.println("연결이 되지 않았습니다.");
 		}
 	}
 
@@ -163,7 +163,7 @@ public class CatchmindServer implements Constants {
 						break;
 						
 					case CHAT:
-						sendStringWithoutSelf(Message);
+						sendString(Message);
 						findAnswer(parsMessage);
 						break;
 						
@@ -185,7 +185,7 @@ public class CatchmindServer implements Constants {
 			}
 		}
 
-		//모두 접속하면 ALL_CONNECTED발신
+		//모두 접속하면 ALL_CONNECTED
 		private void allConnected() {
 			if (vcClient.size() == PLAYER_COUNT) {
 				for (int i = 0; i < vcClient.size(); i++) {

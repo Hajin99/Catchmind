@@ -30,6 +30,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private Socket socket;
 	   private BufferedReader br;
 	   private PrintWriter writer;
+	   private int portNumber;
 	   
 	   private String SendDraw = null;
 	   private String SendColor = null;
@@ -46,8 +47,10 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private int TurnCount = 0;
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
-	   public CatchmindClient() {
-		  super("Catchmind Game Screen");
+	   public CatchmindClient(String roomName, int portNumber) {
+		  super(roomName);
+		  this.portNumber=portNumber;
+		  
 	      addWindowListener(this);
 	      connectSocket();
 	   }
@@ -81,7 +84,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	               //제한시간 1초씩 감소
 	               i--;
 	               if (i < 0) {
-	            	   //제한시간 끝나면 시간초과 안내창
+	            	  //제한시간 끝나면 시간초과창
 	                  int timeover = JOptionPane.showConfirmDialog(client, "타임오버!", "시간초과 안내", JOptionPane.DEFAULT_OPTION);
 	                  
 	                  if (timeover == JOptionPane.OK_OPTION) {
@@ -104,7 +107,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	   public void connectSocket() {
 	      try {
-	        socket = new Socket("127.0.0.1", 5000); 
+	        socket = new Socket("127.0.0.1", portNumber); 
 
 	        //서버에 정보를 보내는 OutputStream, 정보를 받는 InputStream 연결
 	        writer = new PrintWriter(socket.getOutputStream(), true); 
@@ -118,7 +121,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	            "서버와 연결되었습니다.\n" + "IP : " + socket.getInetAddress() + sdf.format(System.currentTimeMillis()));
 
 	      } catch (IOException e) {
-	    	  //서버와 연결 실패시 연결 실패 문장 출력
+	    	  //서버와 연결 실패시
 	    	  System.out.println("서버와 연결을 실패했습니다.");
 	    	  e.printStackTrace();
 	      }
@@ -230,17 +233,14 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	               break;
 	            	
 	            case CHAT:
-	               String chat[] = parsMessage[1].split(SUB_DELIMETER);
-	               
-	               if ("0".equals(chat[0])) {
-	                  MessageTaArr[0].setText(chat[1]);
-	               } else if ("1".equals(chat[0])) {
-	                  MessageTaArr[1].setText(chat[1]);
-	               } else if ("2".equals(chat[0])) {
-	                  MessageTaArr[2].setText(chat[1]);
-	               } else if ("3".equals(chat[0])) {
-	                  MessageTaArr[3].setText(chat[1]);
-	               }
+	            	String chat[] = parsMessage[1].split(SUB_DELIMETER); 
+	            	// 보낸 사람의 ID
+	                int senderId = Integer.parseInt(chat[0]);           
+	                String senderMessage = chat[1]; 
+	                // ID를 닉네임으로 변환                    
+	                String senderName = Nicknames[senderId];            
+	                // 채팅창에 닉네임: 메시지 형식으로 출력
+	                newChatArea.append(senderName + ": " + senderMessage + "\n");
 	               break;
 	               
 	            case  CH:
@@ -273,7 +273,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	       }     
 	   }
 
-	   //출제자 표시, 몇 턴인지 표시, 제한시간 표시, 제시어 받기
+	   //출제자,턴 수,제한시간 표시 및 제시어 받기
 	   public void receiveCurP(String[] parsMessage) {
 	      TurnLabel.setText((TurnCount+1) + "/10 턴");  
 	       TopLabel.setText("-");  
@@ -291,7 +291,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	      
 	   }
 
-	   //제시어 받기, 출제자가 아니라면 제시어가 뜨지 않음, 제시어 받으면 제한시간 줄어듦
+	   //제시어 받기, 출제자만 제시어를 볼 수 있음, 제시어 받으면 제한시간 줄어들기 시작
 	   public void receiveWord(String[] parsMessage) {
 	      
 	       if (MyId != CurrentPlayerCount) {
@@ -317,7 +317,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	       timer.start();
 	   }  	
 
-	   //정답이 나오면 타이머 멈춤, 다음 출제자 알려주고 모두 확인하면 다음 턴 시작
+	   //정답이 나오면 타이머 멈추며 다음 출제자 알려주고 모두 확인하면 다음 턴 시작
 	   //정답을 맞춘 플레이어는 2점, 출제자는 1점
 	   public void receiveCorrect(String[] parsMessage) {
 	      TurnCount++;  
@@ -347,7 +347,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	   //모든 턴이 끝나면 순위와 점수 안내
 	   public void receiveResult(String[] parsMessage) {
-	          String resultMessage = "==결과 발표==\n";
+	          String resultMessage = "    결과 발표    \n";
 
 	          int[] rank = idxOfSorted(Scores);
 	          Set<String> printedNicknames = new HashSet<>();
@@ -368,7 +368,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	                  currentRank = i;
 	              }
 
-	              resultMessage += currentRank + "위 : " + currentNickname + " ---- " + currentScore + "점\n";
+	              resultMessage += currentRank + "위 : " + currentNickname + " == " + currentScore + "점\n";
 	          }
 
 	          int result = JOptionPane.showConfirmDialog(this, resultMessage, "결과 안내", JOptionPane.DEFAULT_OPTION);
@@ -380,9 +380,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	          }
 	      }
 
-
-
-	   //결과 창 순위 나타내는 메소드
+	   //결과 창 순위
 	   public int[] idxOfSorted(int[] Scores) {
 	          Integer[] indexes = new Integer[Scores.length];
 	          for (int i = 0; i < indexes.length; i++) {
@@ -456,22 +454,12 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	  
 	   @Override
 	   public void actionPerformed(ActionEvent e) {
-	      //정답 전송 버튼 클릭한 경우
 	      JButton jButton = (JButton) e.getSource();
-	      if ("전송".equals(jButton.getText())) {
-	         
-	         MessageTaArr[MyId].setText(MessageTf.getText());
 
-	         SendMessage = "CHAT&" + MyId + "," + MessageTf.getText();
-	         writer.println(SendMessage);
-
-	         MessageTf.setText(null);
-	      }
-	      
-	      //채팅방 보내기 버튼 클릭한 경우
+	      //채팅창 메시지 보내는 경우
 	      if ("보내기".equals(jButton.getText())) {
 
-	          String newChatMessage = "CH&" + MyNickName + ": " + newMessageTf.getText();
+	          String newChatMessage = "CHAT&" + MyId + SUB_DELIMETER + newMessageTf.getText();
 	          writer.println(newChatMessage);
 
 	          newMessageTf.setText(null);
@@ -623,6 +611,6 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   public void windowDeactivated(WindowEvent e) {}
 
 	   public static void main(String[] args) {
-	      new CatchmindClient();
+	      //new CatchmindClient("gkdl");
 	   }
 }
