@@ -14,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import mandarin_catchmind.server.CatchmindServer;
+
 public class HomePanel extends JPanel {
 	private ImageIcon homeIcon = new ImageIcon(getClass().getResource("/images/시작화면.png"));
 	private Image homeImage = homeIcon.getImage();

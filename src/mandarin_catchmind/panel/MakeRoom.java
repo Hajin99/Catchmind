@@ -69,8 +69,6 @@ public class MakeRoom extends JPanel {
 	} //RoomPanel끝
 	
 	class EastPanel extends JPanel{
-
-		
 		public EastPanel() {
 			this.setLayout(new GridLayout(2,1));
 			add(new PortPanel());
@@ -120,8 +118,8 @@ public class MakeRoom extends JPanel {
 		            	v.add(roomName);
 		            	roomList.setListData(v);
                         nameField.setText(""); // 입력 필드 초기화
-                        //GameScreen gameScreen = new GameScreen(roomName);
-                        //gameScreen.setVisible(true);
+                        MyGameScreen myGameScreen = new MyGameScreen(roomName);
+                        myGameScreen.setVisible(true);
                         
 		            }
 		        });

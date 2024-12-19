@@ -47,6 +47,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
 	   public CatchmindClient() {
+		  super("Catchmind Game Screen");
 	      addWindowListener(this);
 	      connectSocket();
 	   }

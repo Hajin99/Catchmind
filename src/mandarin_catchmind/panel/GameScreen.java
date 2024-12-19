@@ -488,12 +488,12 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	    return PaintPanel;
 	}
 
-	private String roomName;
+	//private String title;
 	
 	//위치 설정
-	public GameScreen(String roomName) {
-		super(roomName);
-		this.roomName=roomName;
+	public GameScreen(String title) {
+		super(title);
+		//this.title=title;
 		JPanel Player1 = getChatPanel(0);
 		Player1.setBounds(0, 0, 300, 167);
 
