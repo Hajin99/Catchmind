@@ -79,7 +79,6 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	private Font BigFont = new Font("1훈솜사탕 Regular", Font.PLAIN, 24);
 	private Font SmallFont = new Font("1훈솜사탕 Regular", Font.PLAIN, 16);
 	
-	
 	//채팅창 패널
     public JPanel getNewChatPanel() {
         JPanel panel = new JPanel() {
@@ -107,15 +106,16 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	            super.paintComponent(g);
 	        }
 	    };
+	    
 	    newMessageTf.setBorder(null);
-	    newMessageTf.setOpaque(false); // 배경 투명
+	    newMessageTf.setOpaque(false); 
 	    newMessageTf.addKeyListener(this);
         newMessageTf.setBounds(30, 650, 180, 30);
         
-        newSendBtn.setHorizontalTextPosition(SwingConstants.CENTER); // 텍스트 위치 조정
-        newSendBtn.setVerticalTextPosition(SwingConstants.BOTTOM); // 텍스트 위치 조정
+        newSendBtn.setHorizontalTextPosition(SwingConstants.CENTER); 
+        newSendBtn.setVerticalTextPosition(SwingConstants.BOTTOM); 
         newSendBtn.setOpaque(false); 
-        newSendBtn.setContentAreaFilled(false); // 내용 영역을 투명하게 설정
+        newSendBtn.setContentAreaFilled(false); 
         newSendBtn.setBorderPainted(false);
         newSendBtn.setFocusPainted(false);
 
@@ -170,47 +170,12 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 		return panel;
 	}
 
-	/*
-	//정답패널 전송 버튼 클릭시 내용 전송
-	public JPanel getChatInsertPanel() {
-	    JPanel panel = new JPanel();
-
-	    // 정답 입력란에 배경 이미지 적용
-	    ImageIcon textFieldIcon = new ImageIcon("./image/textbackground.png");
-	    MessageTf = new JTextField() {
-	        @Override
-	        protected void paintComponent(Graphics g) {
-	            g.drawImage(textFieldIcon.getImage(), 0, 0, getWidth(), getHeight(), null);
-	            super.paintComponent(g);
-	        }
-	    };
-	    MessageTf.setOpaque(false); // 배경 투명
-	    MessageTf.addKeyListener(this);
-
-	    // 전송 버튼에 배경 이미지 적용
-	    ImageIcon sendButtonIcon = new ImageIcon("./image/button.png");
-	    JButton sendBtn = new JButton(sendButtonIcon);
-	    sendBtn.setOpaque(false);
-	    sendBtn.setContentAreaFilled(false);
-	    sendBtn.setBorderPainted(false);
-	    sendBtn.addActionListener(this);
-
-	    // 레이아웃 설정
-	    panel.setLayout(new BorderLayout());
-	    panel.add(MessageTf, BorderLayout.CENTER);
-	    panel.add(sendBtn, BorderLayout.EAST);
-
-	    return panel;
-	}
-	*/
-
 	//턴, 제한시간 상태 표시 패널
 	public JPanel getStatusBarPanel() {
 	    JPanel panel = new JPanel();
 	    panel.setOpaque(false);
 	    panel.setLayout(null);
 
-	    // TurnLabel에 배경 이미지 추가
 	    ImageIcon turnBackgroundIcon = new ImageIcon("./image/orangeimg.png");
 	    TurnLabel = new JLabel("-/10 턴") {
 	        @Override
@@ -220,11 +185,10 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	        }
 	    };
 	    TurnLabel.setFont(SmallFont);
-	    TurnLabel.setHorizontalAlignment(JLabel.CENTER); // 텍스트 가운데 정렬
-	    TurnLabel.setBounds(30, 10, 100, 60); // 크기를 배경 이미지에 맞게 조정
+	    TurnLabel.setHorizontalAlignment(JLabel.CENTER);
+	    TurnLabel.setBounds(30, 10, 100, 60); 
 	    TurnLabel.setOpaque(false);
 
-	    // TimerLabel에 배경 이미지 추가
 	    ImageIcon timerBackgroundIcon = new ImageIcon("./image/orangeimg.png");
 	    TimerLabel = new JLabel("30 초") {
 	        @Override
@@ -234,11 +198,10 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	        }
 	    };
 	    TimerLabel.setFont(SmallFont);
-	    TimerLabel.setHorizontalAlignment(JLabel.CENTER); // 텍스트 가운데 정렬
-	    TimerLabel.setBounds(450, 10, 100, 60); // 크기를 배경 이미지에 맞게 조정
+	    TimerLabel.setHorizontalAlignment(JLabel.CENTER);
+	    TimerLabel.setBounds(450, 10, 100, 60);
 	    TimerLabel.setOpaque(false);
 
-	    // 중앙의 TopLabel
 	    ImageIcon titleBackgroundIcon = new ImageIcon("./image/title.png");
 	    TopLabel = new JLabel() {
 	    	@Override
@@ -256,12 +219,10 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	    return panel;
 	}
 
-
-	//도구 패널
-	//펜의 굵기 선택 가능(대,중,소)
-	//지우개의 굵기 선택 가능(대,중,소)
-	//그림판 전체 지우기 가능
-	//펜의 색상 선택 가능(빨,주,노,초,파,검)
+	//펜의 굵기 선택(대,중,소)
+	//지우개의 굵기 선택(대,중,소)
+	//펜의 색상 선택(빨,주,노,초,파,검)
+	//그림판 전체 지우기
 	public JPanel getInfoPanel() {
 
 		JPanel leftPanel1 = new JPanel();
@@ -356,6 +317,7 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 				super.paintComponent(g);
 			}
 		};
+		
 		rightPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK), "색상선택", TitledBorder.CENTER, TitledBorder.TOP));
 		rightPanel.setLayout(new GridLayout(2, 3));
 		rightPanel.setOpaque(false);
@@ -480,14 +442,13 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 	        }
 	    };
 
-	    PaintPanel.setBackground(Color.WHITE); // 기본 배경 색 설정 (배경 이미지가 없다면 기본 배경 색 사용)
+	    PaintPanel.setBackground(Color.WHITE); //기본 배경 색 흰색으로 설정
 	    PaintPanel.setPreferredSize(new Dimension(400, 600));
 	    PaintPanel.addMouseListener(this);
 	    PaintPanel.addMouseMotionListener(this);
 
 	    return PaintPanel;
 	}
-
 
 	//위치 설정
 	public CatchmindGUI() {
@@ -503,9 +464,6 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 
 		JPanel Player4 = getChatPanel(3);
 		Player4.setBounds(0, 501, 300, 167);
-
-		//JPanel Answer = getChatInsertPanel();
-		//Answer.setBounds(0, 668, 300, 32);
 
 		JPanel TopBar = getStatusBarPanel();
 		TopBar.setBounds(300, 0, 600, 70);
@@ -531,7 +489,6 @@ public abstract class CatchmindGUI extends JFrame implements ActionListener, Mou
 		add(Player2);
 		add(Player3);
 		add(Player4);
-		//add(Answer);
 		add(TopBar);
 		add(PaintPanel);
 		add(infoPanel);
