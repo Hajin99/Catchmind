@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class CatchmindServer implements Constants {
@@ -19,7 +21,7 @@ public class CatchmindServer implements Constants {
 	private Vector<ClientInfo> vcClient;
 
 	private String[] Nicknames = new String[PLAYER_COUNT];
-
+	private Map<String, Vector<ClientInfo>> roomMap = new HashMap<>(); // 방 이름과 클라이언트 목록 매핑
 	//제시어 설정
 	private String Words[] = 
 		{
@@ -87,6 +89,7 @@ public class CatchmindServer implements Constants {
 		BufferedReader br;
 		PrintWriter writer;
 		Socket socket;
+		private String roomName;
 
 		public ClientInfo(Socket socket) {
 			this.socket = socket;
@@ -105,9 +108,14 @@ public class CatchmindServer implements Constants {
 				allConnected();
 
 				while ((Message = br.readLine()) != null) {
-					parsMessage = Message.split("&");
+					System.out.println("수신한 메시지: " + Message);
 
+					parsMessage = Message.split("&");
+					
 					switch (parsMessage[0]) {
+					case ROOMNAME:
+					    receivedRoomName(parsMessage);
+					    break;
 					case NICKNAME:
 						receivedNickname(parsMessage);
 						break;
@@ -167,6 +175,7 @@ public class CatchmindServer implements Constants {
 						sendString(Message);
 						findAnswer(parsMessage);
 						break;
+					
 						
 					case CH:
 	                    processChatMessage(parsMessage);
@@ -197,6 +206,35 @@ public class CatchmindServer implements Constants {
 
 		}
 
+		// 방 이름 수신 및 방에 클라이언트 추가
+		private void receivedRoomName(String[] parsMessage) {
+		    roomName = parsMessage[1]; // 수신된 방 이름
+		    System.out.println("방 이름이 설정되었습니다: " + this.roomName);
+		    roomMap.putIfAbsent(roomName, new Vector<>()); // 방이 없으면 새로 생성
+
+		    Vector<ClientInfo> roomClients = roomMap.get(roomName); // 해당 방의 클라이언트 목록 가져오기
+
+		    if (!roomClients.contains(this)) { // 중복 추가 방지
+		        roomClients.add(this); // 방에 현재 클라이언트 추가
+		        System.out.println("클라이언트 [" + this + "]가 방 [" + roomName + "]에 추가되었습니다.");
+		    }
+		}
+		
+		// 같은 방에 있는 클라이언트들에게만 메시지 브로드캐스트
+		private synchronized void broadcastToRoom(String roomName, String message, ClientInfo sender) {
+		    Vector<ClientInfo> roomClients = roomMap.get(roomName); // 해당 방의 클라이언트 목록 가져오기
+		    if (roomClients != null) {
+		        for (ClientInfo client : roomClients) {
+		            if (client != sender) { // 메시지 보낸 클라이언트 제외
+		                client.writer.println(message); // 메시지 전송
+		                System.out.println("보낸 대상: " + client + " 메시지: " + message);
+		            }
+		        }
+		    } else {
+		        System.out.println("방 [" + roomName + "]이 존재하지 않습니다.");
+		    }
+		}
+		
 		//닉네임 수신
 		private void receivedNickname(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {

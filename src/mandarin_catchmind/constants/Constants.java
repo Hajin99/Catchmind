@@ -6,6 +6,7 @@ public interface Constants {
 	   
 	static final String ALL_CONNECTED = "ALL_CONNECTED";
 	static final String ID = "ID";
+	static final String ROOMNAME = "ROOMNAME";
 	static final String NICKNAME = "NICKNAME";
 	static final String START_READY = "START_READY";
 	static final String TURN_READY = "TURN_READY";

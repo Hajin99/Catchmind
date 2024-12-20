@@ -31,7 +31,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private Socket socket;
 	   private BufferedReader br;
 	   private PrintWriter writer;
-	   private int portNumber;
+	   private String roomName;
 	   
 	   private String SendDraw = null;
 	   private String SendColor = null;
@@ -50,7 +50,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   
 	   public CatchmindClient(String roomName) {
 		  super(roomName);
-		  //this.portNumber=portNumber;
+		  this.roomName=roomName;
 		  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	      addWindowListener(this);
 	      connectSocket();
@@ -113,8 +113,11 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	        //서버에 정보를 보내는 OutputStream, 정보를 받는 InputStream 연결
 	        writer = new PrintWriter(socket.getOutputStream(), true); 
 	        br = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-	        System.out.println("포트 " + portNumber + "에 연결 성공!");
-	        		
+	        System.out.println( roomName + "에 입장!");
+	        
+	        writer.println("ROOMNAME&" + roomName); // 방 이름을 서버로 전송
+            System.out.println("서버로 방 이름 전송: " + roomName);
+	        
 	        Thread thread = new Thread(this); 
 	        thread.start();
 
@@ -124,7 +127,6 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	      } catch (IOException e) {
 	    	  //서버와 연결 실패시
-	    	  System.out.println("포트 " + portNumber + "에 연결 실패: " + e.getMessage());
 	    	  System.out.println("서버와 연결을 실패했습니다.");
 	    	  e.printStackTrace();
 	      }
@@ -408,6 +410,8 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	         SendMessage = "CHAT&" + MyId + "," + MessageTf.getText();
 	         writer.println(SendMessage);
+	         //SendMessage = "CHAT&" + roomName + "&" + MyId + "," + MessageTf.getText();
+	         //writer.println(SendMessage);
 
 	         MessageTf.setText(null);
 	      }

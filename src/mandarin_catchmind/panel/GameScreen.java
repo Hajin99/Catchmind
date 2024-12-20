@@ -484,7 +484,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		//setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-		//getContentPane().setBackground(new Color(255, 230, 170));
+		getContentPane().setBackground(new Color(255, 230, 170));
 
 		setLayout(null);
 		add(Player1);

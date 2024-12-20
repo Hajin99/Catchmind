@@ -124,7 +124,7 @@ public class MakeRoom extends JPanel {
 		        });
 		        makeButton.addActionListener(new ActionListener() {
 		            public void actionPerformed(ActionEvent e) {
-		            	String roomName = nameField.getText();
+		            	String roomName = nameField.getText(); //방이름
 		            	//int portNumberN = Integer.parseInt(portNumber.getText());
 		            	v.add(roomName);
 		            	roomList.setListData(v);
