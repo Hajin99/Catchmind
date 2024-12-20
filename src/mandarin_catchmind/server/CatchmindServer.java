@@ -1,18 +1,14 @@
 package mandarin_catchmind.server;
 
-import mandarin_catchmind.server.CatchmindServer.ClientInfo;
-import mandarin_catchmind.client.CatchmindClient.TimerThread;
-import mandarin_catchmind.constants.Constants;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
+
+import mandarin_catchmind.server.CatchmindServer.ClientInfo;
+import mandarin_catchmind.constants.Constants;
 
 public class CatchmindServer implements Constants {
 
@@ -21,7 +17,7 @@ public class CatchmindServer implements Constants {
 	private Vector<ClientInfo> vcClient;
 
 	private String[] Nicknames = new String[PLAYER_COUNT];
-	private Map<String, Vector<ClientInfo>> roomMap = new HashMap<>(); // 방 이름과 클라이언트 목록 매핑
+
 	//제시어 설정
 	private String Words[] = 
 		{
@@ -38,7 +34,9 @@ public class CatchmindServer implements Constants {
 	private String Answer;
 
 	public CatchmindServer() {
-		connectSocket();
+		startServer(5000);
+		startServer(5001);
+		startServer(5002);
 		makeWordsIdx();
 	}
 
@@ -59,42 +57,72 @@ public class CatchmindServer implements Constants {
 
 	//연결 포트 5000으로 설정
 	//콘솔창에 연결 상태 출력
-	public void connectSocket() {
-		try {
+	public void startServer(int port) {
+        new Thread(() -> {
+            try {
+                ServerSocket serverSocket = new ServerSocket(port);
+                Vector<ClientInfo> vcClient = new Vector<>();
+                System.out.println("포트 " + port + "에서 서버 준비 완료!");
 
-			serverSocket = new ServerSocket(5000);
-			vcClient = new Vector<>();
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    ClientInfo client = new ClientInfo(socket, vcClient);
+                    client.start();
+                    vcClient.add(client);
+                    System.out.println("포트 " + port + "에서 클라이언트 " + vcClient.size() + "명 연결됨.");
+                }
+            } catch (Exception e) {
+                System.out.println("포트 " + port + "에서 서버 실행 실패: " + e.getMessage());
+            }
+        }).start();
+    }
 
-			while (vcClient.size() < PLAYER_COUNT) {
-				System.out.println("서버 준비 완료!");
-
-				socket = serverSocket.accept();
-
-				ClientInfo ci = new ClientInfo(socket);
-				ci.start();
-				vcClient.add(ci);
-
-				System.out.println("클라이언트" + (vcClient.size()) + "(과)와 연결되었습니다.");
-			}
-
-			System.out.println("모든 클라이언트 연결 완료");
-
-		} catch (Exception e) {
-			System.out.println("연결안됨");
-		}
-	}
+	
+//	public void connectSocket3() {
+//		try {
+//
+//			serverSocket = new ServerSocket(5002);
+//			vcClient = new Vector<>();
+//
+//			while (vcClient.size() < PLAYER_COUNT) {
+//				System.out.println("서버 준비 완료!");
+//
+//				socket = serverSocket.accept();
+//
+//				ClientInfo ci = new ClientInfo(socket);
+//				ci.start();
+//				vcClient.add(ci);
+//
+//				System.out.println("클라이언트" + (vcClient.size()) + "(과)와 연결되었습니다.");
+//			}
+//
+//			System.out.println("모든 클라이언트 연결 완료!");
+//
+//		} catch (Exception e) {
+//			System.out.println("연결이 되지 않았습니다.");
+//		}
+//	}
 
 	//Client로부터 정보 수신
 	class ClientInfo extends Thread {
 		BufferedReader br;
 		PrintWriter writer;
 		Socket socket;
-		private String roomName;
-
-		public ClientInfo(Socket socket) {
+		private Vector<ClientInfo> vcClient;
+		 
+		public ClientInfo(Socket socket, Vector<ClientInfo> vcClient) {
 			this.socket = socket;
+			this.vcClient = vcClient;
 		}
-
+		
+//		private void broadcast(String[] parsMessage) {
+//            for (ClientInfo client : vcClient) {
+//                if (client != this) {
+//                    client.writer.println(parsMessage);
+//                }
+//            }
+//        }
+		
 		@Override
 		public void run() {
 			try {
@@ -108,14 +136,10 @@ public class CatchmindServer implements Constants {
 				allConnected();
 
 				while ((Message = br.readLine()) != null) {
-					System.out.println("수신한 메시지: " + Message);
-
-					parsMessage = Message.split("&");
 					
+					parsMessage = Message.split("&");
+					//broadcast(parsMessage);
 					switch (parsMessage[0]) {
-					case ROOMNAME:
-					    receivedRoomName(parsMessage);
-					    break;
 					case NICKNAME:
 						receivedNickname(parsMessage);
 						break;
@@ -175,7 +199,6 @@ public class CatchmindServer implements Constants {
 						sendString(Message);
 						findAnswer(parsMessage);
 						break;
-					
 						
 					case CH:
 	                    processChatMessage(parsMessage);
@@ -187,8 +210,10 @@ public class CatchmindServer implements Constants {
 				System.out.println("메세지 통신 실패");
 				e.printStackTrace();
 			}
+			
+		
 		}
-
+		
 		private void sendId() {
 			for (int i = 0; i < vcClient.size(); i++) {
 				vcClient.get(i).writer.println("ID&" + i);
@@ -206,35 +231,6 @@ public class CatchmindServer implements Constants {
 
 		}
 
-		// 방 이름 수신 및 방에 클라이언트 추가
-		private void receivedRoomName(String[] parsMessage) {
-		    roomName = parsMessage[1]; // 수신된 방 이름
-		    System.out.println("방 이름이 설정되었습니다: " + this.roomName);
-		    roomMap.putIfAbsent(roomName, new Vector<>()); // 방이 없으면 새로 생성
-
-		    Vector<ClientInfo> roomClients = roomMap.get(roomName); // 해당 방의 클라이언트 목록 가져오기
-
-		    if (!roomClients.contains(this)) { // 중복 추가 방지
-		        roomClients.add(this); // 방에 현재 클라이언트 추가
-		        System.out.println("클라이언트 [" + this + "]가 방 [" + roomName + "]에 추가되었습니다.");
-		    }
-		}
-		
-		// 같은 방에 있는 클라이언트들에게만 메시지 브로드캐스트
-		private synchronized void broadcastToRoom(String roomName, String message, ClientInfo sender) {
-		    Vector<ClientInfo> roomClients = roomMap.get(roomName); // 해당 방의 클라이언트 목록 가져오기
-		    if (roomClients != null) {
-		        for (ClientInfo client : roomClients) {
-		            if (client != sender) { // 메시지 보낸 클라이언트 제외
-		                client.writer.println(message); // 메시지 전송
-		                System.out.println("보낸 대상: " + client + " 메시지: " + message);
-		            }
-		        }
-		    } else {
-		        System.out.println("방 [" + roomName + "]이 존재하지 않습니다.");
-		    }
-		}
-		
 		//닉네임 수신
 		private void receivedNickname(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {

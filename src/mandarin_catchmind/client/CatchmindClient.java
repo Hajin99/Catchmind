@@ -32,6 +32,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private BufferedReader br;
 	   private PrintWriter writer;
 	   private String roomName;
+	   private int portNumber;
 	   
 	   private String SendDraw = null;
 	   private String SendColor = null;
@@ -48,9 +49,10 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private int TurnCount = 0;
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
-	   public CatchmindClient(String roomName) {
+	   public CatchmindClient(String roomName, int portNumber) {
 		  super(roomName);
 		  this.roomName=roomName;
+		  this.portNumber=portNumber;
 		  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	      addWindowListener(this);
 	      connectSocket();
@@ -108,7 +110,8 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	   public void connectSocket() {
 	      try {
-	        socket = new Socket("127.0.0.1", 5000); 
+	    	 socket = new Socket("127.0.0.1", portNumber); 
+	        //socket = new Socket("127.0.0.1", 5000); 
 
 	        //서버에 정보를 보내는 OutputStream, 정보를 받는 InputStream 연결
 	        writer = new PrintWriter(socket.getOutputStream(), true); 
@@ -410,7 +413,6 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	         SendMessage = "CHAT&" + MyId + "," + MessageTf.getText();
 	         writer.println(SendMessage);
-	         //SendMessage = "CHAT&" + roomName + "&" + MyId + "," + MessageTf.getText();
 	         //writer.println(SendMessage);
 
 	         MessageTf.setText(null);
