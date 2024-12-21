@@ -29,17 +29,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import mandarin_catchmind.client.CatchmindClient;
+import mandarin_catchmind.panel.RoomInfo;
 
 public class MakeRoom extends JPanel {
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
 	//private List <String> roomNameList = new ArrayList<>();
-	private Vector<RoomInfo> v = new Vector<RoomInfo>();
-	JList<RoomInfo> roomList = new JList<>(v);
+	private static Vector<RoomInfo> v = new Vector<RoomInfo>();
+	private static JList<RoomInfo> roomList = new JList<>(v);
 	private ImageIcon homeIcon = new ImageIcon(getClass().getResource("/images/연한오렌지.png"));
 	private Image homeImage = homeIcon.getImage();
 	private ImageIcon bage = new ImageIcon(getClass().getResource("/images/연한베이지.png"));
 	private Image bageImage = bage.getImage();
-	int number=1;
+	int number=2;
 	public MakeRoom(GameFrame frame) {
 		this.setLayout(new GridLayout(1,2));
 		add(new RoomPanel());
@@ -48,30 +49,14 @@ public class MakeRoom extends JPanel {
 		setVisible(true);
 	}
 	
-	class RoomInfo {
-	    private String roomName;
-	    private int port;
-	    private int number;
-	    
-	    public RoomInfo(String roomName, int port, int number) {
-	        this.roomName = roomName;
-	        this.port = port;
-	        this.number = number;
-	    }
+	public static Vector<RoomInfo> getRoomVector() {
+        return v;
+    }
 
-	    public String getRoomName() {
-	        return roomName;
-	    }
-
-	    public int getPort() {
-	        return port;
-	    }
-
-	    @Override
-	    public String toString() {
-	        return number + "번 방: " +roomName + " (포트: " + port + ")";
-	    }
-	}
+    public static JList<RoomInfo> getRoomList() {
+        return roomList;
+    }
+	
 	
 	//방 리스트를 보여주는 판넬
 	class RoomPanel extends JPanel {

@@ -37,6 +37,7 @@ public class CatchmindServer implements Constants {
 		startServer(5000);
 		startServer(5001);
 		startServer(5002);
+		startServer(5003);
 		makeWordsIdx();
 	}
 
