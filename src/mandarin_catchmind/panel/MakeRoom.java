@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -32,20 +33,44 @@ import mandarin_catchmind.client.CatchmindClient;
 public class MakeRoom extends JPanel {
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
 	//private List <String> roomNameList = new ArrayList<>();
-	private Vector<String> v = new Vector<String>();
-	JList<String> roomList = new JList<>(v);
-	
+	private Vector<RoomInfo> v = new Vector<RoomInfo>();
+	JList<RoomInfo> roomList = new JList<>(v);
 	private ImageIcon homeIcon = new ImageIcon(getClass().getResource("/images/연한오렌지.png"));
 	private Image homeImage = homeIcon.getImage();
 	private ImageIcon bage = new ImageIcon(getClass().getResource("/images/연한베이지.png"));
 	private Image bageImage = bage.getImage();
-	
+	int number=1;
 	public MakeRoom(GameFrame frame) {
 		this.setLayout(new GridLayout(1,2));
 		add(new RoomPanel());
         add(new EastPanel());
         
 		setVisible(true);
+	}
+	
+	class RoomInfo {
+	    private String roomName;
+	    private int port;
+	    private int number;
+	    
+	    public RoomInfo(String roomName, int port, int number) {
+	        this.roomName = roomName;
+	        this.port = port;
+	        this.number = number;
+	    }
+
+	    public String getRoomName() {
+	        return roomName;
+	    }
+
+	    public int getPort() {
+	        return port;
+	    }
+
+	    @Override
+	    public String toString() {
+	        return number + "번 방: " +roomName + " (포트: " + port + ")";
+	    }
 	}
 	
 	//방 리스트를 보여주는 판넬
@@ -56,9 +81,39 @@ public class MakeRoom extends JPanel {
 			
 			roomList.setVisibleRowCount(1);
 			roomList.setFixedCellWidth(100);
+			roomList.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+			roomList.setBackground(Color.ORANGE);
+			roomList.setBorder(null);
+			
+			roomList.addMouseListener(new MouseAdapter() {
+	            @Override
+	            public void mouseClicked(MouseEvent e) {
+	                if (e.getClickCount() == 2) { // 더블 클릭
+	                    int index = roomList.locationToIndex(e.getPoint()); // 클릭한 항목의 인덱스
+	                    if (index != -1) { // 유효한 항목 클릭
+	                        RoomInfo selectedRoom = roomList.getModel().getElementAt(index); // 선택된 방 이름
+	                        int port = selectedRoom.getPort(); // 해당 방의 포트 번호
+	                        String roomName = selectedRoom.getRoomName();
+	                        
+	                        // 다이얼로그 표시
+	                        int result = JOptionPane.showConfirmDialog(null,
+	                                "입장하시겠습니까?", selectedRoom + " 선택",
+	                                JOptionPane.YES_NO_OPTION);
+
+	                        if (result == JOptionPane.YES_OPTION) { // "확인"을 클릭한 경우
+	                            // 포트 번호로 소켓 생성
+	                            CatchmindClient client = new CatchmindClient(roomName, port);
+	                            System.out.println("소켓 생성 성공: " + selectedRoom + "에 연결되었습니다. (포트: " + port + ")");
+	                        }
+	                    }
+	                }
+	            }  
+	        });
+			
 			JScrollPane scrollPane = new JScrollPane(roomList);
 			add(scrollPane);
 			add(new MandarinPanel());
+			
 			setVisible(true);
 		}
 		
@@ -99,7 +154,9 @@ public class MakeRoom extends JPanel {
 				nameField = new JTextField();
 		        //port.setOpaque(false); // 배경 투명화
 				nameField.setForeground(Color.BLACK); // 텍스트 색상 설정
-				nameField.setFont(new Font("Arial", Font.BOLD, 24));
+				nameField.setBackground(Color.ORANGE);
+				nameField.setHorizontalAlignment(JTextField.CENTER);
+				nameField.setFont(new Font("맑은 고딕", Font.BOLD, 24));
 				nameField.setBorder(null);
 				nameField.setBounds(850, 200, 200, 50);
 		        add(nameField);
@@ -108,6 +165,10 @@ public class MakeRoom extends JPanel {
 				JLabel pt = new JLabel("포트 번호 입력 ↓ ");
 				pt.setHorizontalAlignment(SwingConstants.CENTER);
 				JTextField portNumber = new JTextField(10); // 너비 10 칸
+				portNumber.setBackground(Color.ORANGE);
+				portNumber.setHorizontalAlignment(JTextField.CENTER);
+				portNumber.setFont(new Font("맑은 고딕", Font.BOLD, 24));
+				portNumber.setBorder(null);
 				//portPanel.add(portNumber);
 				add(pt);
 				add(portNumber);
@@ -122,17 +183,21 @@ public class MakeRoom extends JPanel {
 		            	makeButton.setRolloverIcon(makeRoom2);
 		            }
 		        });
+		        
 		        makeButton.addActionListener(new ActionListener() {
 		            public void actionPerformed(ActionEvent e) {
 		            	String roomName = nameField.getText(); //방이름
 		            	int portNumberN = Integer.parseInt(portNumber.getText());
-		            	v.add(roomName);
+		            	RoomInfo roomInfo = new RoomInfo(roomName, portNumberN, number);
+		            	number++;
+		            	v.add(roomInfo);
 		            	roomList.setListData(v);
                         nameField.setText(""); // 입력 필드 초기화
                         portNumber.setText("");
                         //MyGameScreen myGameScreen = new MyGameScreen(roomName);
                         //myGameScreen.setVisible(true);
                         CatchmindClient client = new CatchmindClient(roomName, portNumberN);
+                        
                         client.setVisible(true);
 		            }
 		        });
@@ -142,7 +207,7 @@ public class MakeRoom extends JPanel {
 		    protected void paintComponent(Graphics g) {
 		        super.paintComponent(g);
 		        // 패널 크기에 맞춰 이미지를 배경으로 그립니다.
-		        g.drawImage(homeImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
+		        g.drawImage(bageImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
 		    }
 		}
 		//PortPanel끝
@@ -169,7 +234,7 @@ public class MakeRoom extends JPanel {
 			    protected void paintComponent(Graphics g) {
 			        super.paintComponent(g);
 			        // 패널 크기에 맞춰 이미지를 배경으로 그립니다.
-			        g.drawImage(bageImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
+			        g.drawImage(homeImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
 			    }
 			}//MandarinPanel끝
 	

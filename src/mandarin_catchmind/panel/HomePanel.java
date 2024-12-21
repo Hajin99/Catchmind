@@ -34,7 +34,7 @@ public class HomePanel extends JPanel {
         name = new JTextField();
         name.setOpaque(false); // 배경 투명화
         name.setForeground(Color.BLACK); // 텍스트 색상 설정
-        name.setFont(new Font("Arial", Font.BOLD, 24));
+        name.setFont(new Font("맑은 고딕", Font.BOLD, 24));
         name.setBorder(null);
         name.setBounds(660, 240, 200, 50);
         add(name);
@@ -42,7 +42,7 @@ public class HomePanel extends JPanel {
         ip = new JTextField();
         ip.setOpaque(false); // 배경 투명화
         ip.setForeground(Color.BLACK); // 텍스트 색상 설정
-        ip.setFont(new Font("Arial", Font.BOLD, 24));
+        ip.setFont(new Font("맑은 고딕", Font.BOLD, 24));
         ip.setBorder(null);
         ip.setBounds(660, 350, 200, 50);
         add(ip);
@@ -50,7 +50,7 @@ public class HomePanel extends JPanel {
         port = new JTextField();
         port.setOpaque(false); // 배경 투명화
         port.setForeground(Color.BLACK); // 텍스트 색상 설정
-        port.setFont(new Font("Arial", Font.BOLD, 24));
+        port.setFont(new Font("맑은 고딕", Font.BOLD, 24));
         port.setBorder(null);
         port.setBounds(660, 460, 200, 50);
         add(port);
