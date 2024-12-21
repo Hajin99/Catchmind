@@ -342,38 +342,39 @@ public class CatchmindClient extends CatchmindGUI implements Runnable, Constants
 
 	   //모든 턴이 끝나면 순위와 점수 안내
 	   public void receiveResult(String[] parsMessage) {
-	          String resultMessage = "    결과 발표    \n";
+		    String resultMessage = "\n";
 
-	          int[] rank = idxOfSorted(Scores);
-	          Set<String> printedNicknames = new HashSet<>();
-	          Set<Integer> usedRanks = new HashSet<>();
+		    int[] rank = idxOfSorted(Scores);
+		    Set<String> printedNicknames = new HashSet<>();
+		    Set<Integer> usedRanks = new HashSet<>();
 
-	          for (int i = 0; i < rank.length; ++i) {
-	              int currentRank = i + 1;
-	              int currentScore = Scores[rank[i]];
-	              String currentNickname = Nicknames[rank[i]];
+		    for (int i = 0; i < rank.length; ++i) {
+		        int currentRank = i + 1;
+		        int currentScore = Scores[rank[i]];
+		        String currentNickname = Nicknames[rank[i]];
 
-	              // 이미 출력한 닉네임이면 다음 등수로 건너뛰기
-	              if (!printedNicknames.add(currentNickname)) {
-	                  continue;
-	              }
+		        // 이미 출력한 닉네임이면 다음 등수로 건너뛰기
+		        if (!printedNicknames.add(currentNickname)) {
+		            continue;
+		        }
 
-	              // 같은 점수인 경우 등수를 증가시키지 않고 그대로 유지
-	              if (i > 0 && Scores[rank[i - 1]] == currentScore) {
-	                  currentRank = i;
-	              }
+		        // 같은 점수인 경우 등수를 증가시키지 않고 그대로 유지
+		        if (i > 0 && Scores[rank[i - 1]] == currentScore) {
+		            currentRank = i;
+		        }
 
-	              resultMessage += currentRank + "위 : " + currentNickname + " == " + currentScore + "점\n";
-	          }
+		        resultMessage += currentNickname + "   ==   " + currentScore + "점\n";
+		    }
 
-	          int result = JOptionPane.showConfirmDialog(this, resultMessage, "결과 안내", JOptionPane.DEFAULT_OPTION);
+		    // 새로운 랭킹 화면을 띄운다 (getInstance 사용)
+		    RankFrame rankFrame = RankFrame.getInstance(resultMessage);
+		    rankFrame.setVisible(true);
 
-	          if (result == JOptionPane.OK_OPTION) {
-	              setVisible(false);
-	              writer.println("EXIT&");
-	              System.exit(0);
-	          }
-	      }
+		    // 이전 게임 화면을 숨긴다
+		    this.setVisible(false);  // 현재 게임 화면을 숨깁니다.
+		    this.dispose();  // 게임 화면을 완전히 종료합니다.
+		}
+
 
 	   //결과 창 순위
 	   public int[] idxOfSorted(int[] Scores) {
