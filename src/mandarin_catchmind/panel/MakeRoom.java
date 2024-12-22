@@ -28,8 +28,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import mandarin_catchmind.Main;
 import mandarin_catchmind.client.CatchmindClient;
 import mandarin_catchmind.panel.RoomInfo;
+import mandarin_catchmind.server.CatchmindServer;
 
 public class MakeRoom extends JPanel {
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -42,12 +44,12 @@ public class MakeRoom extends JPanel {
 	private Image bageImage = bage.getImage();
 	int number=2;
 	int chN=1;
-
+	private GameFrame frame;
 	public MakeRoom(GameFrame frame) {
 		this.setLayout(new GridLayout(1,2));
 		add(new RoomPanel());
         add(new EastPanel());
-        
+        this.frame=frame;
 		setVisible(true);
 	}
 	
@@ -208,7 +210,10 @@ public class MakeRoom extends JPanel {
 			
 			class MandarinPanel extends JPanel {
 				private ImageIcon orange2 = new ImageIcon(getClass().getResource("/images/1.png"));
+				private ImageIcon backImg = new ImageIcon(getClass().getResource("/images/back.png"));
+				private ImageIcon backImg2 = new ImageIcon(getClass().getResource("/images/back2.png"));
 				private JButton ch = new JButton(orange2);
+				private JButton backButton = new JButton(backImg);
 				//private JLabel orangeLabel;
 				
 				public MandarinPanel() {
@@ -237,6 +242,35 @@ public class MakeRoom extends JPanel {
 			                }
 			            }  
 			        });
+					
+					backButton.setBorderPainted(false);
+					backButton.setContentAreaFilled(false);
+					backButton.addMouseListener(new MouseAdapter() {
+			            @Override
+			            public void mouseClicked(MouseEvent e) {
+			            	backButton.setRolloverIcon(backImg2);
+			            }  
+			        });
+					backButton.addActionListener(new ActionListener() {
+			            public void actionPerformed(ActionEvent e) {
+			            	try {
+			                    // 현재 실행 중인 Java 프로그램의 실행 경로 가져오기
+			                    String javaBin = System.getProperty("java.home") + "/bin/java";
+			                    String classPath = System.getProperty("java.class.path");
+			                    String className = Main.class.getName(); // 메인 클래스의 이름 (예: Main)
+			                    
+			                    // 프로세스 빌드
+			                    ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classPath, className);
+			                    builder.start(); // 새 프로세스 시작
+			                    
+			                    System.exit(0); // 현재 애플리케이션 종료
+			                } catch (Exception ex) {
+			                    ex.printStackTrace();
+			                }
+			            	frame.prevPanel();
+			            }
+			        });
+					add(backButton);
 					add(ch);
 				}
 				
@@ -250,7 +284,10 @@ public class MakeRoom extends JPanel {
 			
 			class MandarinPanel2 extends JPanel {
 				private ImageIcon orange3 = new ImageIcon(getClass().getResource("/images/2.png"));
+				private ImageIcon frontImg = new ImageIcon(getClass().getResource("/images/door.png"));
+				private ImageIcon frontImg2 = new ImageIcon(getClass().getResource("/images/front2.png"));
 				private JButton ch = new JButton(orange3);
+				private JButton frontButton = new JButton(frontImg);
 				//private JLabel orangeLabel;
 				
 				public MandarinPanel2() {
@@ -279,7 +316,23 @@ public class MakeRoom extends JPanel {
 			                }
 			            }  
 			        });
+					
+					frontButton.setBorderPainted(false);
+					frontButton.setContentAreaFilled(false);
+					frontButton.addMouseListener(new MouseAdapter() {
+			            @Override
+			            public void mouseClicked(MouseEvent e) {
+			            	//frontButton.setRolloverIcon(frontImg2);
+			            }  
+			        });
+					frontButton.addActionListener(new ActionListener() {
+						@Override
+			            public void actionPerformed(ActionEvent e) {
+			            	System.exit(0);
+			            }  
+			        });
 					add(ch);
+					add(frontButton);
 				}
 				
 				@Override

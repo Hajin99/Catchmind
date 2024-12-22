@@ -27,4 +27,8 @@ public class GameFrame extends JFrame {
     public void nextPanel() {
 		cards.next(this.getContentPane());
     }
+    
+    public void prevPanel() {
+		cards.previous(this.getContentPane());
+    }
 }

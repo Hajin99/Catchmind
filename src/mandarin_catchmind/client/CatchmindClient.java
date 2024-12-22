@@ -27,6 +27,7 @@ import mandarin_catchmind.client.CatchmindClient.TimerThread;
 import mandarin_catchmind.constants.Constants;
 import mandarin_catchmind.panel.GameScreen;
 import mandarin_catchmind.panel.RankFrame;
+import mandarin_catchmind.client.Music;
 
 public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   
@@ -48,7 +49,6 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private ImageIcon ch = new ImageIcon(getClass().getResource("/images/button.png"));
 	   private ImageIcon ch1 = new ImageIcon(getClass().getResource("/images/1_2.png"));
 	   private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
-		
 		
 	   private int myId;
 	   private String[] nicknames = new String[PLAYER_COUNT];

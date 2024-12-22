@@ -6,8 +6,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowListener;
@@ -23,6 +26,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+
+import mandarin_catchmind.client.Music;
 
 public abstract class GameScreen extends JFrame implements ActionListener, MouseListener, MouseMotionListener, WindowListener, KeyListener {
 
@@ -83,6 +88,10 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	private ImageIcon ch = new ImageIcon(getClass().getResource("/images/button.png"));
 	private ImageIcon ch1 = new ImageIcon(getClass().getResource("/images/1_2.png"));
 	private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
+	private ImageIcon onA = new ImageIcon(getClass().getResource("/images/on.png"));
+	private ImageIcon offA = new ImageIcon(getClass().getResource("/images/off.png"));
+	private Music m = new Music();
+	private int onOff = 0;
 	
 	//채팅창 패널
     public JPanel getNewChatPanel() {
@@ -112,6 +121,44 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	        }
 	    };
 	    
+	    JButton bgmButton = new JButton(onA);
+	    bgmButton.setBounds(200, 5, 50, 50);
+	    bgmButton.setBorderPainted(false);
+	    bgmButton.setContentAreaFilled(false);
+	    bgmButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+            	if(onOff==0) {
+            		bgmButton.setRolloverIcon(onA);
+				}
+				else {
+					bgmButton.setRolloverIcon(offA);
+				}
+            	
+            }
+        });
+	    
+	    bgmButton.addActionListener(new ActionListener() {
+			@Override
+            public void actionPerformed(ActionEvent e) {
+				if(onOff==0) {
+					m.mStart();
+					bgmButton.setIcon(onA);
+					onOff=1;
+				}
+				else {
+					m.mStop();
+					bgmButton.setIcon(offA);
+					onOff=0;
+				}
+            	 
+//            	 try {
+//					Thread.sleep(m.getClip().getMicrosecondLength()/1000);
+//				} catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+            }  
+        });
 	    newMessageTf.setBorder(null);
 	    newMessageTf.setOpaque(false); 
 	    newMessageTf.addKeyListener(this);
@@ -127,6 +174,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
         newSendBtn.setBounds(210, 645, 80, 60);
         newSendBtn.addActionListener(this);
 
+        panel.add(bgmButton);
         panel.add(newScrollPane);
         panel.add(newMessageTf);
         panel.add(newSendBtn);
@@ -510,6 +558,19 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 
 		g = paintPanel.getGraphics();
 		graphic = (Graphics2D) g;
+		
+		addWindowListener(this);
 
 	}
+	
+	@Override
+    public void windowClosing(java.awt.event.WindowEvent e) {
+        // 음악 정지
+        if (m != null) {
+            m.mStop(); // 음악 정지
+            m.close(); // 리소스 해제
+        }
+
+        dispose(); // 창 닫기
+    }
 }
