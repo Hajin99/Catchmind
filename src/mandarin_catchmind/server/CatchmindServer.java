@@ -16,22 +16,22 @@ public class CatchmindServer implements Constants {
 	private Socket socket;
 	private Vector<ClientInfo> vcClient;
 
-	private String[] Nicknames = new String[PLAYER_COUNT];
+	private String[] nickNames = new String[PLAYER_COUNT];
 
 	//제시어 설정
-	private String Words[] = 
+	private String words[] = 
 		{
 				"곰", "토끼", "강아지", "고양이", "호랑이", "거북이", "곰", "펭귄", "선인장", "꽃", 
 				"복숭아", "수박", "아보카도", "감", "체리", "블루베리", "참외", "밤", "귤", "포도"
 		};
 
-	private int[] WordsIndex = new int[TURN_COUNT];
+	private int[] wordsIndex = new int[TURN_COUNT];
 
-	private int Count = 0;
-	private int TurnCount = 0;
-	private int CurrentPlayer;
-	private int PlayerAnswer;
-	private String Answer;
+	private int count = 0;
+	private int turnCount = 0;
+	private int currentPlayer;
+	private int playerAnswer;
+	private String answer;
 
 	public CatchmindServer() {
 		startServer(5000);
@@ -45,10 +45,10 @@ public class CatchmindServer implements Constants {
 	public void makeWordsIdx() {
 
 		for (int i = 0; i < TURN_COUNT; ++i) {
-			WordsIndex[i] = (int) (Math.random() * 20);
+			wordsIndex[i] = (int) (Math.random() * 20);
 
 			for (int j = 0; j < i; ++j) {
-				if (WordsIndex[i] == WordsIndex[j]) {
+				if (wordsIndex[i] == wordsIndex[j]) {
 					i--;
 					break;
 				}
@@ -156,22 +156,22 @@ public class CatchmindServer implements Constants {
 					case TIMEOVER:
 						for (int i = 0; i < vcClient.size(); i++) {
 							if (vcClient.get(i) == this) {
-								Count++;
+								count++;
 							}
 						}
 
-						if (Count == PLAYER_COUNT) {
-							int randNum = CurrentPlayer;
-							while (randNum == CurrentPlayer) {
+						if (count == PLAYER_COUNT) {
+							int randNum = currentPlayer;
+							while (randNum == currentPlayer) {
 								randNum = (int) (Math.random() * PLAYER_COUNT);
 							}
 
-							CurrentPlayer = randNum;
+							currentPlayer = randNum;
 
-							sendString("CurP&" + CurrentPlayer);
+							sendString("CurP&" + currentPlayer);
 
-							Count = 0;
-							TurnCount++;
+							count = 0;
+							turnCount++;
 						}
 
 						break;
@@ -236,21 +236,21 @@ public class CatchmindServer implements Constants {
 		private void receivedNickname(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {
 				if (vcClient.get(i) == this) {
-					Count++;
-					Nicknames[i] = parsMessage[1];
+					count++;
+					nickNames[i] = parsMessage[1];
 				}
 			}
 
-			if (Count == PLAYER_COUNT) {
+			if (count == PLAYER_COUNT) {
 				String nicks = "NICKNAME&";
 				for (int i = 0; i < vcClient.size(); i++) {
-					nicks += Nicknames[i];
+					nicks += nickNames[i];
 					if (i == vcClient.size() - 1)
 						break;
 					nicks += ",";
 				}
 				sendString(nicks);
-				Count = 0;
+				count = 0;
 			}
 		}
 
@@ -258,17 +258,17 @@ public class CatchmindServer implements Constants {
 		private void receivedStartReady(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {
 				if (vcClient.get(i) == this) {
-					Count++;
+					count++;
 				}
 			}
 			System.out.println("START_READY 도착함");
 
-			if (Count == PLAYER_COUNT) {
-				CurrentPlayer = (int) (Math.random() * PLAYER_COUNT);
-				sendString("CurP&" + CurrentPlayer);
+			if (count == PLAYER_COUNT) {
+				currentPlayer = (int) (Math.random() * PLAYER_COUNT);
+				sendString("CurP&" + currentPlayer);
 
 				System.out.println("출제자 보내짐");
-				Count = 0;
+				count = 0;
 			}
 		}
 
@@ -276,18 +276,18 @@ public class CatchmindServer implements Constants {
 		private void receivedTurnReady(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {
 				if (vcClient.get(i) == this) {
-					Count++;
+					count++;
 				}
 			}
 			System.out.println("TURN_READY 도착함");
 
-			if (Count == PLAYER_COUNT) {
+			if (count == PLAYER_COUNT) {
 
-				Answer = Words[WordsIndex[TurnCount]];
-				sendString("WORD&" + Answer);
+				answer = words[wordsIndex[turnCount]];
+				sendString("WORD&" + answer);
 				System.out.println("제시어 보내짐");
-				System.out.println("TurnCount: " + TurnCount);
-				Count = 0;
+				System.out.println("TurnCount: " + turnCount);
+				count = 0;
 			}
 		}
 
@@ -295,14 +295,14 @@ public class CatchmindServer implements Constants {
 		private void receivedTurnEnd(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {
 				if (vcClient.get(i) == this) {
-					Count++;
+					count++;
 				}
 			}
 
-			if (Count == PLAYER_COUNT) {
-				CurrentPlayer = PlayerAnswer;
-				sendString("CurP&" + CurrentPlayer);
-				Count = 0;
+			if (count == PLAYER_COUNT) {
+				currentPlayer = playerAnswer;
+				sendString("CurP&" + currentPlayer);
+				count = 0;
 			}
 		}
 
@@ -310,14 +310,14 @@ public class CatchmindServer implements Constants {
 		private void receivedResult(String[] parsMessage) {
 			for (int i = 0; i < vcClient.size(); i++) {
 				if (vcClient.get(i) == this) {
-					Count++;
+					count++;
 				}
 			}
 			System.out.println("RESULT 도착함");
 
-			if (Count == PLAYER_COUNT) {
+			if (count == PLAYER_COUNT) {
 				sendString("RESULT&");
-				Count = 0;
+				count = 0;
 
 				System.out.println("RESULT 보내짐");
 			}
@@ -351,13 +351,13 @@ public class CatchmindServer implements Constants {
 		//정답 나오면 다음 턴으로 이동
 		private void findAnswer(String[] parsMessage) {
 			String[] chat = parsMessage[1].split(SUB_DELIMETER);
-			PlayerAnswer = Integer.parseInt(chat[0]);
+			playerAnswer = Integer.parseInt(chat[0]);
 
-			if (chat[1].equals(Answer)) {
+			if (chat[1].equals(answer)) {
 
-				sendString("CORRECT&" + PlayerAnswer + SUB_DELIMETER + chat[1]);
+				sendString("CORRECT&" + playerAnswer + SUB_DELIMETER + chat[1]);
 
-				TurnCount++;
+				turnCount++;
 			}
 		}
 	}

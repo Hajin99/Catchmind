@@ -37,25 +37,25 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private int portNumber;
 	   private int chN;
 	   
-	   private String SendDraw = null;
-	   private String SendColor = null;
-	   private String SendThickness = null;
-	   private String SendScore = null;
-	   private String SendMessage = null;
+	   private String sendDraw = null;
+	   private String sendColor = null;
+	   private String sendThickness = null;
+	   private String sendScore = null;
+	   private String sendMessage = null;
 	   
-	   private String MyNickName;
+	   private String myNickName;
 	   private int myChr;//캐릭터 설정
 	   private ImageIcon ch = new ImageIcon(getClass().getResource("/images/button.png"));
 	   private ImageIcon ch1 = new ImageIcon(getClass().getResource("/images/1_2.png"));
 	   private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
 		
 		
-	   private int MyId;
-	   private String[] Nicknames = new String[PLAYER_COUNT];
-	   private int[] Scores = new int[PLAYER_COUNT];
-	   private int CurrentPlayerCount;
-	   private boolean CanDraw = true;
-	   private int TurnCount = 0;
+	   private int myId;
+	   private String[] nicknames = new String[PLAYER_COUNT];
+	   private int[] scores = new int[PLAYER_COUNT];
+	   private int currentPlayerCount;
+	   private boolean canDraw = true;
+	   private int turnCount = 0;
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
 	   public CatchmindClient(String roomName, int portNumber, int chN) {
@@ -92,7 +92,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	         while (true) {
 	         
 	            if (run == true) {
-	               TimerLabel.setText(i + " 초");
+	               timerLabel.setText(i + " 초");
 	               Thread.sleep(2000);
 	            
 	               //제한시간 1초씩 감소
@@ -103,9 +103,9 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	                  
 	                  if (timeover == JOptionPane.OK_OPTION) {
 	                     writer.println("TIMEOVER&");
-	                     TurnCount++;
+	                     turnCount++;
 	                     
-	                     	if (TurnCount == TURN_COUNT) {
+	                     	if (turnCount == TURN_COUNT) {
 	                     		writer.println("RESULT&");
 	                     	}
 	                  }     
@@ -166,13 +166,13 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	            
 	            switch (parsMessage[0]) {
 	            case ID:
-	               MyId = Integer.parseInt(parsMessage[1]);
+	               myId = Integer.parseInt(parsMessage[1]);
 	               break;
 	            
 	            case ALL_CONNECTED:
-	               MyNickName = JOptionPane.showInputDialog("닉네임을 입력하세요");
-	               NameLabelArr[MyId].setText(MyNickName + "(나)");
-	               writer.println("NICKNAME&" + MyNickName + "," + chN);
+	               myNickName = JOptionPane.showInputDialog("닉네임을 입력하세요");
+	               nameLabelArr[myId].setText(myNickName + "(나)");
+	               writer.println("NICKNAME&" + myNickName + "," + chN);
 	               break;
 	            
 	            case NICKNAME:
@@ -198,7 +198,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	               
 	            case DRAW:
 	               if ("delete".equals(parsMessage[1])) {
-	                  PaintPanel.repaint();
+	                  paintPanel.repaint();
 	                  break;
 	               }
 	               
@@ -257,7 +257,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	                int senderId = Integer.parseInt(chat[0]);           
 	                String senderMessage = chat[1]; 
 	                // ID를 닉네임으로 변환                    
-	                String senderName = Nicknames[senderId];            
+	                String senderName = nicknames[senderId];            
 	                // 채팅창에 닉네임: 메시지 형식으로 출력
 	                newChatArea.append(senderName + ": " + senderMessage + "\n");
 	               break;
@@ -278,18 +278,21 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   //접속한 플레이어가 닉네임을 모두 입력하면 게임 시작
 	   public void receiveNickname(String[] parsMessage) {
 		   String[] data = parsMessage[1].split(SUB_DELIMETER); // SUB_DELIMETER는 ',' 또는 '&' 등
-		    for (int i = 0; i < data.length; i += 2) {
-		        int index = i / 2; // Nicknames와 캐릭터 번호 배열의 인덱스 계산
-		        Nicknames[index] = data[i]; // 닉네임 저장
+		   for (int i = 0; i < data.length; i += 2) {
+		        int index = i / 2;
+		        nicknames[index] = data[i]; // 닉네임 저장
 		        int characterNumber = Integer.parseInt(data[i + 1]); // 캐릭터 번호 저장
+
+		        // UI 업데이트
+		        nameLabelArr[index].setText(nicknames[index]);
 		        if (characterNumber == 1) {
 		            imgLabelArr[index].setIcon(ch1);
 		        } else {
 		            imgLabelArr[index].setIcon(ch2);
 		        }
 		    }
-	       
-	       NameLabelArr[MyId].setText(MyNickName + "(나)"); 
+		    // 내 이름은 따로 표시
+		    nameLabelArr[myId].setText(myNickName + "(나)");
 	       
 	       int startReady = JOptionPane.showConfirmDialog(this, "게임을 시작합니다", "게임 시작 안내",
 	             JOptionPane.DEFAULT_OPTION);
@@ -301,14 +304,14 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	   //출제자,턴 수,제한시간 표시 및 제시어 받기
 	   public void receiveCurP(String[] parsMessage) {
-	      TurnLabel.setText((TurnCount+1) + "/10 턴");  
-	       TopLabel.setText("-");  
-	       PaintPanel.repaint();  
-	       TimerLabel.setText(SEC + " 초");  
+	      turnLabel.setText((turnCount+1) + "/10 턴");  
+	       topLabel.setText("-");  
+	       paintPanel.repaint();  
+	       timerLabel.setText(SEC + " 초");  
 	       
-	       CurrentPlayerCount = Integer.parseInt(parsMessage[1]);
+	       currentPlayerCount = Integer.parseInt(parsMessage[1]);
 	       
-	       int turnReady = JOptionPane.showConfirmDialog(this, Nicknames[CurrentPlayerCount] + "님 차례입니다" , "출제자 안내",
+	       int turnReady = JOptionPane.showConfirmDialog(this, nicknames[currentPlayerCount] + "님 차례입니다" , "출제자 안내",
 	             JOptionPane.DEFAULT_OPTION);
 	       
 	       if (turnReady == JOptionPane.OK_OPTION) {
@@ -320,24 +323,24 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   //제시어 받기, 출제자만 제시어를 볼 수 있음, 제시어 받으면 제한시간 줄어들기 시작
 	   public void receiveWord(String[] parsMessage) {
 	      
-	       if (MyId != CurrentPlayerCount) {
+	       if (myId != currentPlayerCount) {
 	          
-	          MessageTf.setEditable(true);
-	          MessageTaArr[MyId].setText("");
+	          messageTf.setEditable(true);
+	          messageTaArr[myId].setText("");
 
-	          MessageTaArr[CurrentPlayerCount].setText(Nicknames[CurrentPlayerCount] + "님 차례입니다.");
+	          messageTaArr[currentPlayerCount].setText(nicknames[currentPlayerCount] + "님 차례입니다.");
 
-	          CanDraw = false;
+	          canDraw = false;
 	       }
 
-	       if (MyId == CurrentPlayerCount) {
+	       if (myId == currentPlayerCount) {
 	          
-	          MessageTf.setEditable(false);
-	          for (int i=0; i<PLAYER_COUNT; ++i) MessageTaArr[i].setText("");  
+	          messageTf.setEditable(false);
+	          for (int i=0; i<PLAYER_COUNT; ++i) messageTaArr[i].setText("");  
 	          
-	          CanDraw = true;
+	          canDraw = true;
 
-	          MessageTaArr[CurrentPlayerCount].setText("※ 제시어 : " + parsMessage[1]);   
+	          messageTaArr[currentPlayerCount].setText("※ 제시어 : " + parsMessage[1]);   
 	       }
 	       timer = new TimerThread(this);
 	       timer.start();
@@ -346,27 +349,27 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   //정답이 나오면 타이머 멈추며 다음 출제자 알려주고 모두 확인하면 다음 턴 시작
 	   //정답을 맞춘 플레이어는 2점, 출제자는 1점
 	   public void receiveCorrect(String[] parsMessage) {
-	       TurnCount++;  
+	       turnCount++;  
 	       timer.stopTimer();
 	       timer = null;
 	       System.gc();
 	       String correct[] = parsMessage[1].split(SUB_DELIMETER);
-	       String correctNickname = Nicknames[Integer.parseInt(correct[0])];
+	       String correctNickname = nicknames[Integer.parseInt(correct[0])];
 	             int correctJop = JOptionPane.showConfirmDialog(this, "정답은 " + correct[1] + "입니다!\n" + correctNickname + "님 정답!", "정답 안내",
 	             JOptionPane.DEFAULT_OPTION);
 
 	       if (correctJop == JOptionPane.OK_OPTION) {
-	          if (TurnCount != TURN_COUNT)
+	          if (turnCount != TURN_COUNT)
 	             writer.println("TURN_END&");  
 	       }
 	       
-	       Scores[Integer.parseInt(correct[0])] += 2;
-	       Scores[CurrentPlayerCount] += 1;
+	       scores[Integer.parseInt(correct[0])] += 2;
+	       scores[currentPlayerCount] += 1;
 	       
-	       ScoreLabelArr[Integer.parseInt(correct[0])].setText("점수 : " + Scores[Integer.parseInt(correct[0])]);
-	       ScoreLabelArr[CurrentPlayerCount].setText("점수 : " + Scores[CurrentPlayerCount]);
+	       scoreLabelArr[Integer.parseInt(correct[0])].setText("점수 : " + scores[Integer.parseInt(correct[0])]);
+	       scoreLabelArr[currentPlayerCount].setText("점수 : " + scores[currentPlayerCount]);
 
-	       if (TurnCount == TURN_COUNT) {
+	       if (turnCount == TURN_COUNT) {
 	          writer.println("RESULT&");
 	       }
 	   }
@@ -375,14 +378,14 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   public void receiveResult(String[] parsMessage) {
 		    String resultMessage = "\n";
 
-		    int[] rank = idxOfSorted(Scores);
+		    int[] rank = idxOfSorted(scores);
 		    Set<String> printedNicknames = new HashSet<>();
 		    Set<Integer> usedRanks = new HashSet<>();
 
 		    for (int i = 0; i < rank.length; ++i) {
 		        int currentRank = i + 1;
-		        int currentScore = Scores[rank[i]];
-		        String currentNickname = Nicknames[rank[i]];
+		        int currentScore = scores[rank[i]];
+		        String currentNickname = nicknames[rank[i]];
 
 		        // 이미 출력한 닉네임이면 다음 등수로 건너뛰기
 		        if (!printedNicknames.add(currentNickname)) {
@@ -390,7 +393,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 		        }
 
 		        // 같은 점수인 경우 등수를 증가시키지 않고 그대로 유지
-		        if (i > 0 && Scores[rank[i - 1]] == currentScore) {
+		        if (i > 0 && scores[rank[i - 1]] == currentScore) {
 		            currentRank = i;
 		        }
 
@@ -428,13 +431,13 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   public void keyPressed(KeyEvent e) {
 	      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 	        
-	         MessageTaArr[MyId].setText(MessageTf.getText());
+	         messageTaArr[myId].setText(messageTf.getText());
 
-	         SendMessage = "CHAT&" + MyId + "," + MessageTf.getText();
-	         writer.println(SendMessage);
+	         sendMessage = "CHAT&" + myId + "," + messageTf.getText();
+	         writer.println(sendMessage);
 	         //writer.println(SendMessage);
 
-	         MessageTf.setText(null);
+	         messageTf.setText(null);
 	      }
 	   }
 
@@ -442,18 +445,18 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   @Override
 	   public void mousePressed(MouseEvent e) {
 	      
-	      if (CanDraw == true) {
-	              graphic.setColor(CurrentColor);
+	      if (canDraw == true) {
+	              graphic.setColor(currentColor);
 	              
 	            startX = e.getX(); 
 	            startY = e.getY(); 
 
 	            // 서버로 전달
-	            SendScore = "DRAW&" + "start," + startX + "," + startY;
-	            writer.println(SendScore);
+	            sendScore = "DRAW&" + "start," + startX + "," + startY;
+	            writer.println(sendScore);
 	            if (true) {
-	               SendThickness = "THICKNESS&" + Thickness;
-	               writer.println(SendThickness);
+	               sendThickness = "THICKNESS&" + thickness;
+	               writer.println(sendThickness);
 	            }
 	      }
 	   }
@@ -463,15 +466,15 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   public void mouseDragged(MouseEvent e) {
 	      
 	      
-	      if (CanDraw == true) {
+	      if (canDraw == true) {
 	            endX = e.getX();
 
 	            endY = e.getY();
 	            
-	            SendScore = "DRAW&" + "end," + endX + "," + endY;
-	            writer.println(SendScore);
+	            sendScore = "DRAW&" + "end," + endX + "," + endY;
+	            writer.println(sendScore);
 
-	            graphic.setStroke(new BasicStroke(Thickness, BasicStroke.CAP_ROUND, 0)); 
+	            graphic.setStroke(new BasicStroke(thickness, BasicStroke.CAP_ROUND, 0)); 
 	            graphic.drawLine(startX, startY, endX, endY); 
 
 	            startX = endX; 
@@ -487,116 +490,116 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	      //채팅창 메시지 보내는 경우
 	      if ("보내기".equals(jButton.getText())) {
 
-	          String newChatMessage = "CHAT&" + MyId + SUB_DELIMETER + newMessageTf.getText();
+	          String newChatMessage = "CHAT&" + myId + SUB_DELIMETER + newMessageTf.getText();
 	          writer.println(newChatMessage);
 
 	          newMessageTf.setText(null);
 	      }
 	     
 	      //연필 굵기, 지우개 굵기, 전체 삭제, 펜의 색깔 선택 하는 경우
-	      if (e.getSource() == BigPencil) {
-	        CurrentColor = CurrentColorMemory;
-	         graphic.setColor(CurrentColor);
-	         Thickness = 10; 
-	         SendThickness = "THICKNESS&" + Thickness; 
-	         writer.println(SendThickness);
+	      if (e.getSource() == bigPencil) {
+	        currentColor = currentColorMemory;
+	         graphic.setColor(currentColor);
+	         thickness = 10; 
+	         sendThickness = "THICKNESS&" + thickness; 
+	         writer.println(sendThickness);
 	      }
 	      
-	      if (e.getSource() == MediumPencil) {
-	        CurrentColor = CurrentColorMemory;
-	         graphic.setColor(CurrentColor);
-	         Thickness = 5; 
-	         SendThickness = "THICKNESS&" + Thickness; 
-	         writer.println(SendThickness);
+	      if (e.getSource() == mediumPencil) {
+	        currentColor = currentColorMemory;
+	         graphic.setColor(currentColor);
+	         thickness = 5; 
+	         sendThickness = "THICKNESS&" + thickness; 
+	         writer.println(sendThickness);
 	      }
 	      
-	      if (e.getSource() == SmallPencil) {
-	        CurrentColor = CurrentColorMemory;
-	         graphic.setColor(CurrentColor);
-	         Thickness = 1; 
-	         SendThickness = "THICKNESS&" + Thickness; 
-	         writer.println(SendThickness);
+	      if (e.getSource() == smallPencil) {
+	        currentColor = currentColorMemory;
+	         graphic.setColor(currentColor);
+	         thickness = 1; 
+	         sendThickness = "THICKNESS&" + thickness; 
+	         writer.println(sendThickness);
 	      }
 	     
-	      if (e.getSource() == BigEraser) {
-	        CurrentColorMemory = CurrentColor;
-	         CurrentColor = Color.WHITE;
-	         graphic.setColor(CurrentColor);
-	         Thickness = 10; 
-	         SendThickness = "THICKNESS&" + Thickness; 
-	         SendColor = "COLOR&white"; 
-	         writer.println(SendThickness);
-	         writer.println(SendColor);
+	      if (e.getSource() == bigEraser) {
+	        currentColorMemory = currentColor;
+	         currentColor = Color.WHITE;
+	         graphic.setColor(currentColor);
+	         thickness = 10; 
+	         sendThickness = "THICKNESS&" + thickness; 
+	         sendColor = "COLOR&white"; 
+	         writer.println(sendThickness);
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == MediumEraser) {
-	        CurrentColorMemory = CurrentColor;
-	         CurrentColor = Color.WHITE;
-	         graphic.setColor(CurrentColor);
-	         Thickness = 5; 
-	         SendThickness = "THICKNESS&" + Thickness; 
-	         SendColor = "COLOR&white"; 
-	         writer.println(SendThickness);
-	         writer.println(SendColor);
+	      if (e.getSource() == mediumEraser) {
+	        currentColorMemory = currentColor;
+	         currentColor = Color.WHITE;
+	         graphic.setColor(currentColor);
+	         thickness = 5; 
+	         sendThickness = "THICKNESS&" + thickness; 
+	         sendColor = "COLOR&white"; 
+	         writer.println(sendThickness);
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == SmallEraser) {
-	        CurrentColorMemory = CurrentColor;
-	         CurrentColor = Color.WHITE;
-	         graphic.setColor(CurrentColor);
-	         Thickness = 1; 
-	         SendThickness = "THICKNESS&" + Thickness; 
-	         SendColor = "COLOR&white"; 
-	         writer.println(SendThickness);
-	         writer.println(SendColor);
+	      if (e.getSource() == smallEraser) {
+	        currentColorMemory = currentColor;
+	         currentColor = Color.WHITE;
+	         graphic.setColor(currentColor);
+	         thickness = 1; 
+	         sendThickness = "THICKNESS&" + thickness; 
+	         sendColor = "COLOR&white"; 
+	         writer.println(sendThickness);
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == ClearEraser) {
-	         PaintPanel.repaint(); 
-	         SendDraw = "DRAW&delete";
-	         writer.println(SendDraw);
+	      if (e.getSource() == clearEraser) {
+	         paintPanel.repaint(); 
+	         sendDraw = "DRAW&delete";
+	         writer.println(sendDraw);
 	      }
 	      
-	      if (e.getSource() == RedPen) {
-	         CurrentColor = Color.RED;
-	         graphic.setColor(CurrentColor);
-	         SendColor = "COLOR&red";
-	         writer.println(SendColor);
+	      if (e.getSource() == redPen) {
+	         currentColor = Color.RED;
+	         graphic.setColor(currentColor);
+	         sendColor = "COLOR&red";
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == OrangePen) {
-	         CurrentColor = Color.ORANGE;
-	         graphic.setColor(CurrentColor);
-	         SendColor = "COLOR&orange";
-	         writer.println(SendColor);
+	      if (e.getSource() == orangePen) {
+	         currentColor = Color.ORANGE;
+	         graphic.setColor(currentColor);
+	         sendColor = "COLOR&orange";
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == YellowPen) {
-	         CurrentColor = Color.YELLOW;
-	         graphic.setColor(CurrentColor);
-	         SendColor = "COLOR&yellow";
-	         writer.println(SendColor);
+	      if (e.getSource() == yellowPen) {
+	         currentColor = Color.YELLOW;
+	         graphic.setColor(currentColor);
+	         sendColor = "COLOR&yellow";
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == GreenPen) {
-	         CurrentColor = Color.GREEN;
-	         graphic.setColor(CurrentColor);
-	         SendColor = "COLOR&green";
-	         writer.println(SendColor);
+	      if (e.getSource() == greenPen) {
+	         currentColor = Color.GREEN;
+	         graphic.setColor(currentColor);
+	         sendColor = "COLOR&green";
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == BluePen) {
-	         CurrentColor = Color.BLUE;
-	         graphic.setColor(CurrentColor);
-	         SendColor = "COLOR&blue";
-	         writer.println(SendColor);
+	      if (e.getSource() == bluePen) {
+	         currentColor = Color.BLUE;
+	         graphic.setColor(currentColor);
+	         sendColor = "COLOR&blue";
+	         writer.println(sendColor);
 	      }
 	      
-	      if (e.getSource() == BlackPen) {
-	         CurrentColor = Color.BLACK;
-	         graphic.setColor(CurrentColor);
-	         SendColor = "COLOR&black";
-	         writer.println(SendColor);
+	      if (e.getSource() == blackPen) {
+	         currentColor = Color.BLACK;
+	         graphic.setColor(currentColor);
+	         sendColor = "COLOR&black";
+	         writer.println(sendColor);
 	      }
 	   }
 
