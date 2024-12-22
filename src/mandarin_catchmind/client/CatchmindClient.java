@@ -277,20 +277,18 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   
 	   //접속한 플레이어가 닉네임을 모두 입력하면 게임 시작
 	   public void receiveNickname(String[] parsMessage) {
-	       Nicknames = parsMessage[1].split(SUB_DELIMETER);
-	       for (int i=0; i<PLAYER_COUNT*2; ++i) {
-	    	  if(i%2==1) {
-	    		  int index = (i - 1) / 2; // imgLabelArr의 인덱스 계산
-	    		  if(Nicknames[i].equals("1"))
-	    		  	imgLabelArr[index].setIcon(ch1);
-	    		  else
-	    			imgLabelArr[index].setIcon(ch2);
-	    	  }
-	    	  else {
-	    		  int index = i / 2;
-	    		  NameLabelArr[index].setText(Nicknames[i]);
-	    	  }
-	       }
+		   String[] data = parsMessage[1].split(SUB_DELIMETER); // SUB_DELIMETER는 ',' 또는 '&' 등
+		    for (int i = 0; i < data.length; i += 2) {
+		        int index = i / 2; // Nicknames와 캐릭터 번호 배열의 인덱스 계산
+		        Nicknames[index] = data[i]; // 닉네임 저장
+		        int characterNumber = Integer.parseInt(data[i + 1]); // 캐릭터 번호 저장
+		        if (characterNumber == 1) {
+		            imgLabelArr[index].setIcon(ch1);
+		        } else {
+		            imgLabelArr[index].setIcon(ch2);
+		        }
+		    }
+	       
 	       NameLabelArr[MyId].setText(MyNickName + "(나)"); 
 	       
 	       int startReady = JOptionPane.showConfirmDialog(this, "게임을 시작합니다", "게임 시작 안내",
@@ -348,8 +346,8 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   //정답이 나오면 타이머 멈추며 다음 출제자 알려주고 모두 확인하면 다음 턴 시작
 	   //정답을 맞춘 플레이어는 2점, 출제자는 1점
 	   public void receiveCorrect(String[] parsMessage) {
-	      TurnCount++;  
-	       timer.stopTimer();  
+	       TurnCount++;  
+	       timer.stopTimer();
 	       timer = null;
 	       System.gc();
 	       String correct[] = parsMessage[1].split(SUB_DELIMETER);

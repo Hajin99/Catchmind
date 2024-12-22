@@ -62,7 +62,6 @@ public class MakeRoom extends JPanel {
 	
 	//방 리스트를 보여주는 판넬
 	class RoomPanel extends JPanel {
-		
 		public RoomPanel(){
 			this.setLayout(new GridLayout(2,1));
 			
