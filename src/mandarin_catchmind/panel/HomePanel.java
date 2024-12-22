@@ -96,13 +96,21 @@ public class HomePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
             	String roomN = name.getText();
             	int portN = Integer.parseInt(port.getText());
+<<<<<<< HEAD
             	int chN=1;
             	RoomInfo roomInfo = new RoomInfo(roomN, portN, 1, chN);
+=======
+            	RoomInfo roomInfo = new RoomInfo(roomN, portN, 1);
+>>>>>>> c68beedd524537c128b3b8381aa165add7a514b9
             	MakeRoom.getRoomVector().add(roomInfo); // Vector에 추가
                 MakeRoom.getRoomList().setListData(MakeRoom.getRoomVector()); // JList 업데이트
                 name.setText(""); // 입력 필드 초기화
                 port.setText("");
+<<<<<<< HEAD
             	CatchmindClient client = new CatchmindClient(roomN, portN, chN);
+=======
+            	CatchmindClient client = new CatchmindClient(roomN, portN);
+>>>>>>> c68beedd524537c128b3b8381aa165add7a514b9
                 frame.nextPanel();
             }
         });
