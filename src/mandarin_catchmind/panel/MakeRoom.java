@@ -41,6 +41,7 @@ public class MakeRoom extends JPanel {
 	private ImageIcon bage = new ImageIcon(getClass().getResource("/images/연한베이지.png"));
 	private Image bageImage = bage.getImage();
 	int number=2;
+	int chN=1;
 	public MakeRoom(GameFrame frame) {
 		this.setLayout(new GridLayout(1,2));
 		add(new RoomPanel());
@@ -82,12 +83,12 @@ public class MakeRoom extends JPanel {
 	                        
 	                        // 다이얼로그 표시
 	                        int result = JOptionPane.showConfirmDialog(null,
-	                                "입장하시겠습니까?", selectedRoom + " 선택",
+	                                "입장하시겠습니까?", " 방 선택",
 	                                JOptionPane.YES_NO_OPTION);
 
 	                        if (result == JOptionPane.YES_OPTION) { // "확인"을 클릭한 경우
 	                            // 포트 번호로 소켓 생성
-	                            CatchmindClient client = new CatchmindClient(roomName, port);
+	                            CatchmindClient client = new CatchmindClient(roomName, port, chN);
 	                            System.out.println("소켓 생성 성공: " + selectedRoom + "에 연결되었습니다. (포트: " + port + ")");
 	                        }
 	                    }
@@ -114,7 +115,7 @@ public class MakeRoom extends JPanel {
 		public EastPanel() {
 			this.setLayout(new GridLayout(2,1));
 			add(new PortPanel());
-			add(new MandarinPanel());
+			add(new MandarinPanel2());
 			setVisible(true);
 		}
 		
@@ -173,7 +174,7 @@ public class MakeRoom extends JPanel {
 		            public void actionPerformed(ActionEvent e) {
 		            	String roomName = nameField.getText(); //방이름
 		            	int portNumberN = Integer.parseInt(portNumber.getText());
-		            	RoomInfo roomInfo = new RoomInfo(roomName, portNumberN, number);
+		            	RoomInfo roomInfo = new RoomInfo(roomName, portNumberN, number, chN);
 		            	number++;
 		            	v.add(roomInfo);
 		            	roomList.setListData(v);
@@ -181,7 +182,7 @@ public class MakeRoom extends JPanel {
                         portNumber.setText("");
                         //MyGameScreen myGameScreen = new MyGameScreen(roomName);
                         //myGameScreen.setVisible(true);
-                        CatchmindClient client = new CatchmindClient(roomName, portNumberN);
+                        CatchmindClient client = new CatchmindClient(roomName, portNumberN, chN);
                         
                         client.setVisible(true);
 		            }
@@ -206,13 +207,79 @@ public class MakeRoom extends JPanel {
 	
 			
 			class MandarinPanel extends JPanel {
-				private ImageIcon orange = new ImageIcon(getClass().getResource("/images/orange.png"));
-				
-				private JLabel orangeLabel;
+				private ImageIcon orange2 = new ImageIcon(getClass().getResource("/images/1.png"));
+				private JButton ch = new JButton(orange2);
+				//private JLabel orangeLabel;
 				
 				public MandarinPanel() {
-					orangeLabel= new JLabel(orange);
-					add(orangeLabel);
+					//ch.setFocusPainted(false); 
+					ch.setBorderPainted(false);
+					ch.setContentAreaFilled(false);
+					ch.addMouseListener(new MouseAdapter() {
+			            @Override
+			            public void mouseClicked(MouseEvent e) {
+			                if (e.getClickCount() == 2) { // 더블 클릭
+			                    int index = roomList.locationToIndex(e.getPoint()); // 클릭한 항목의 인덱스
+			                    if (index != -1) { // 유효한 항목 클릭
+			                        //RoomInfo selectedRoom = roomList.getModel().getElementAt(index); // 선택된 방 이름
+			                        //int port = selectedRoom.getPort(); // 해당 방의 포트 번호
+			                        //String roomName = selectedRoom.getRoomName();
+			                        
+			                        // 다이얼로그 표시
+			                        int result = JOptionPane.showConfirmDialog(null,
+			                                "캐릭터를 선택하시겠습니까?",  " 캐릭터 선택",
+			                                JOptionPane.YES_NO_OPTION);
+
+			                        if (result == JOptionPane.YES_OPTION) { // "확인"을 클릭한 경우
+			                            chN=1;//캐릭터 선택
+			                        }
+			                    }
+			                }
+			            }  
+			        });
+					add(ch);
+				}
+				
+				@Override
+			    protected void paintComponent(Graphics g) {
+			        super.paintComponent(g);
+			        // 패널 크기에 맞춰 이미지를 배경으로 그립니다.
+			        g.drawImage(homeImage, 0, 0, getWidth(), getHeight(), null); // 배경에 꽉차게
+			    }
+			}//MandarinPanel끝
+			
+			class MandarinPanel2 extends JPanel {
+				private ImageIcon orange3 = new ImageIcon(getClass().getResource("/images/2.png"));
+				private JButton ch = new JButton(orange3);
+				//private JLabel orangeLabel;
+				
+				public MandarinPanel2() {
+					ch.setBorderPainted(false);
+					ch.setContentAreaFilled(false);
+					ch.addMouseListener(new MouseAdapter() {
+			            @Override
+			            public void mouseClicked(MouseEvent e) {
+			                if (e.getClickCount() == 2) { // 더블 클릭
+			                    int index = roomList.locationToIndex(e.getPoint()); // 클릭한 항목의 인덱스
+			                    if (index != -1) { // 유효한 항목 클릭
+			                        //RoomInfo selectedRoom = roomList.getModel().getElementAt(index); // 선택된 방 이름
+			                        //int port = selectedRoom.getPort(); // 해당 방의 포트 번호
+			                        //String roomName = selectedRoom.getRoomName();
+			                        
+			                        // 다이얼로그 표시
+			                        int result = JOptionPane.showConfirmDialog(null,
+			                                "캐릭터를 선택하시겠습니까?",  " 캐릭터 선택",
+			                                JOptionPane.YES_NO_OPTION);
+
+			                        if (result == JOptionPane.YES_OPTION) { // "확인"을 클릭한 경우
+			                        	chN=2;//캐릭터 선택
+			                        	//System.out.println("캐선"+chN);
+			                        }
+			                    }
+			                }
+			            }  
+			        });
+					add(ch);
 				}
 				
 				@Override

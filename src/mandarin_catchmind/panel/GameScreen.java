@@ -54,14 +54,16 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	protected int startY;
 	protected int endX;
 	protected int endY;
-
+	protected int chN; // 캐릭터 선택 번호(1, 2);
+	
 	protected Color CurrentColor = Color.BLACK;
 	protected Color CurrentColorMemory;
 
 	protected JLabel[] NameLabelArr = new JLabel[4];
 	protected JLabel[] ScoreLabelArr = new JLabel[4];
+	protected JLabel[] imgLabelArr = new JLabel[4]; //캐릭터 보여줄 라벨
 	protected JTextArea[] MessageTaArr = new JTextArea[4];
-
+	
 	protected JLabel TurnLabel;
 	protected JLabel TopLabel;
 	public JLabel TimerLabel;
@@ -78,6 +80,9 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	private ImageIcon ChatBackgroundIcon = new ImageIcon(getClass().getResource("/images/chatbackground.png"));
 	private Font BigFont = new Font("1훈솜사탕 Regular", Font.PLAIN, 24);
 	private Font SmallFont = new Font("1훈솜사탕 Regular", Font.PLAIN, 16);
+	private ImageIcon ch = new ImageIcon(getClass().getResource("/images/button.png"));
+	private ImageIcon ch1 = new ImageIcon(getClass().getResource("/images/1_2.png"));
+	private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
 	
 	//채팅창 패널
     public JPanel getNewChatPanel() {
@@ -147,12 +152,17 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 
 		NameLabelArr[idx] = new JLabel("Player" + (idx + 1));
 		NameLabelArr[idx].setFont(SmallFont);
-		NameLabelArr[idx].setBounds(45, 80, 100, 30);
+		NameLabelArr[idx].setBounds(200, 80, 100, 30);
 
 		ScoreLabelArr[idx] = new JLabel("점수 : 0");
 		ScoreLabelArr[idx].setFont(SmallFont);
-		ScoreLabelArr[idx].setBounds(45, 110, 100, 20);
+		ScoreLabelArr[idx].setBounds(200, 110, 100, 20);
+		
 
+	    imgLabelArr[idx] = new JLabel(ch);
+	    imgLabelArr[idx].setIcon(ch);
+		imgLabelArr[idx].setBounds(50,70,80,90);
+		
 		taPanel.setOpaque(false);
 		taPanel.setBounds(130, 50, 150, 100);
 
@@ -161,9 +171,10 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 		MessageTaArr[idx].setLineWrap(true);
 		MessageTaArr[idx].setFont(SmallFont);
 		MessageTaArr[idx].setOpaque(false);
-
+		
 		panel.add(NameLabelArr[idx]);
 		panel.add(ScoreLabelArr[idx]);
+		panel.add(imgLabelArr[idx]);
 		taPanel.add(MessageTaArr[idx]);
 		panel.add(taPanel);
 
@@ -452,8 +463,9 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 
 
 	//위치 설정
-	public GameScreen(String title) {
+	public GameScreen(String title, int chN) {
 		super(title);
+		this.chN=chN;
 		//this.title=title;
 		JPanel Player1 = getChatPanel(0);
 		Player1.setBounds(0, 0, 300, 167);

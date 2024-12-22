@@ -18,6 +18,7 @@ import java.util.Timer;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -33,6 +34,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private PrintWriter writer;
 	   private String roomName;
 	   private int portNumber;
+	   private int chN;
 	   
 	   private String SendDraw = null;
 	   private String SendColor = null;
@@ -41,6 +43,12 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private String SendMessage = null;
 	   
 	   private String MyNickName;
+	   private int myChr;//캐릭터 설정
+	   private ImageIcon ch = new ImageIcon(getClass().getResource("/images/button.png"));
+	   private ImageIcon ch1 = new ImageIcon(getClass().getResource("/images/1_2.png"));
+	   private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
+		
+		
 	   private int MyId;
 	   private String[] Nicknames = new String[PLAYER_COUNT];
 	   private int[] Scores = new int[PLAYER_COUNT];
@@ -49,10 +57,12 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private int TurnCount = 0;
 	   private SimpleDateFormat sdf = new SimpleDateFormat("(YYYY-MM-dd HH:mm:ss)");
 	   
-	   public CatchmindClient(String roomName, int portNumber) {
-		  super(roomName);
+	   public CatchmindClient(String roomName, int portNumber, int chN) {
+		  super(roomName, chN);
 		  this.roomName=roomName;
 		  this.portNumber=portNumber;
+		  this.chN = chN;
+		  System.out.println(chN); //캐릭터 선택 확인
 		  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	      addWindowListener(this);
 	      connectSocket();
@@ -151,7 +161,6 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	         Color SendedColorMemory = Color.BLACK;
 	         
 	         while ((Message = br.readLine()) != null) {
-
 	            parsMessage = Message.split(DELIMETER);
 	            
 	            switch (parsMessage[0]) {
@@ -161,11 +170,12 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	            
 	            case ALL_CONNECTED:
 	               MyNickName = JOptionPane.showInputDialog("닉네임을 입력하세요");
-	               NameLabelArr[MyId].setText(MyNickName + "(나)");  
-	               writer.println("NICKNAME&" + MyNickName);  
+	               NameLabelArr[MyId].setText(MyNickName + "(나)");
+	               writer.println("NICKNAME&" + MyNickName + "," + chN);
 	               break;
 	            
 	            case NICKNAME:
+	               System.out.println(Message);
 	               receiveNickname(parsMessage);
 	               break;
 	            
@@ -266,10 +276,19 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   
 	   //접속한 플레이어가 닉네임을 모두 입력하면 게임 시작
 	   public void receiveNickname(String[] parsMessage) {
-	      Nicknames = parsMessage[1].split(SUB_DELIMETER);
-
-	       for (int i=0; i<PLAYER_COUNT; ++i) {
-	          NameLabelArr[i].setText(Nicknames[i]);
+	       Nicknames = parsMessage[1].split(SUB_DELIMETER);
+	       for (int i=0; i<PLAYER_COUNT*2; ++i) {
+	    	  if(i%2==1) {
+	    		  int index = (i - 1) / 2; // imgLabelArr의 인덱스 계산
+	    		  if(Nicknames[i].equals("1"))
+	    		  	imgLabelArr[index].setIcon(ch1);
+	    		  else
+	    			imgLabelArr[index].setIcon(ch2);
+	    	  }
+	    	  else {
+	    		  int index = i / 2;
+	    		  NameLabelArr[index].setText(Nicknames[i]);
+	    	  }
 	       }
 	       NameLabelArr[MyId].setText(MyNickName + "(나)"); 
 	       
@@ -290,7 +309,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	       
 	       CurrentPlayerCount = Integer.parseInt(parsMessage[1]);
 	       
-	       int turnReady = JOptionPane.showConfirmDialog(this, Nicknames[CurrentPlayerCount] + "님 차례입니다", "출제자 안내",
+	       int turnReady = JOptionPane.showConfirmDialog(this, Nicknames[CurrentPlayerCount] + "님 차례입니다" , "출제자 안내",
 	             JOptionPane.DEFAULT_OPTION);
 	       
 	       if (turnReady == JOptionPane.OK_OPTION) {
@@ -319,7 +338,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	          
 	          CanDraw = true;
 
-	          MessageTaArr[CurrentPlayerCount].setText("제시어 : " + parsMessage[1]);   
+	          MessageTaArr[CurrentPlayerCount].setText("※ 제시어 : " + parsMessage[1]);   
 	       }
 	       timer = new TimerThread(this);
 	       timer.start();
