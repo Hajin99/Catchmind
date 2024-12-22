@@ -41,10 +41,8 @@ public class MakeRoom extends JPanel {
 	private ImageIcon bage = new ImageIcon(getClass().getResource("/images/연한베이지.png"));
 	private Image bageImage = bage.getImage();
 	int number=2;
-<<<<<<< HEAD
 	int chN=1;
-=======
->>>>>>> c68beedd524537c128b3b8381aa165add7a514b9
+
 	public MakeRoom(GameFrame frame) {
 		this.setLayout(new GridLayout(1,2));
 		add(new RoomPanel());
