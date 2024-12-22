@@ -558,19 +558,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 
 		g = paintPanel.getGraphics();
 		graphic = (Graphics2D) g;
-		
-		addWindowListener(this);
 
 	}
 	
-	@Override
-    public void windowClosing(java.awt.event.WindowEvent e) {
-        // 음악 정지
-        if (m != null) {
-            m.mStop(); // 음악 정지
-            m.close(); // 리소스 해제
-        }
-
-        dispose(); // 창 닫기
-    }
 }
