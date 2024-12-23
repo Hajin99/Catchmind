@@ -9,14 +9,15 @@ import java.util.Vector;
 
 import mandarin_catchmind.server.CatchmindServer.ClientInfo;
 import mandarin_catchmind.constants.Constants;
+import mandarin_catchmind.nonConstants.NonConstants;
 
 public class CatchmindServer implements Constants {
 
 	private ServerSocket serverSocket;
 	private Socket socket;
 	private Vector<ClientInfo> vcClient;
-
-	private String[] nickNames = new String[PLAYER_COUNT];
+	private int playerCount = NonConstants.playerCount;
+	private String[] nickNames = new String[playerCount];
 
 	//제시어 설정
 	private String words[] = 
@@ -26,7 +27,7 @@ public class CatchmindServer implements Constants {
 		};
 
 	private int[] wordsIndex = new int[TURN_COUNT];
-
+	
 	private int count = 0;
 	private int turnCount = 0;
 	private int currentPlayer;
@@ -160,10 +161,10 @@ public class CatchmindServer implements Constants {
 							}
 						}
 
-						if (count == PLAYER_COUNT) {
+						if (count == playerCount) {
 							int randNum = currentPlayer;
 							while (randNum == currentPlayer) {
-								randNum = (int) (Math.random() * PLAYER_COUNT);
+								randNum = (int) (Math.random() * playerCount);
 							}
 
 							currentPlayer = randNum;
@@ -223,7 +224,7 @@ public class CatchmindServer implements Constants {
 
 		//모두 접속하면 ALL_CONNECTED
 		private void allConnected() {
-			if (vcClient.size() == PLAYER_COUNT) {
+			if (vcClient.size() == playerCount) {
 				for (int i = 0; i < vcClient.size(); i++) {
 					vcClient.get(i).writer.println("ALL_CONNECTED&");
 				}
@@ -241,7 +242,7 @@ public class CatchmindServer implements Constants {
 				}
 			}
 
-			if (count == PLAYER_COUNT) {
+			if (count == playerCount) {
 				String nicks = "NICKNAME&";
 				for (int i = 0; i < vcClient.size(); i++) {
 					nicks += nickNames[i];
@@ -263,8 +264,8 @@ public class CatchmindServer implements Constants {
 			}
 			System.out.println("START_READY 도착함");
 
-			if (count == PLAYER_COUNT) {
-				currentPlayer = (int) (Math.random() * PLAYER_COUNT);
+			if (count == playerCount) {
+				currentPlayer = (int) (Math.random() * playerCount);
 				sendString("CurP&" + currentPlayer);
 
 				System.out.println("출제자 보내짐");
@@ -281,7 +282,7 @@ public class CatchmindServer implements Constants {
 			}
 			System.out.println("TURN_READY 도착함");
 
-			if (count == PLAYER_COUNT) {
+			if (count == playerCount) {
 
 				answer = words[wordsIndex[turnCount]];
 				sendString("WORD&" + answer);
@@ -299,7 +300,7 @@ public class CatchmindServer implements Constants {
 				}
 			}
 
-			if (count == PLAYER_COUNT) {
+			if (count == playerCount) {
 				currentPlayer = playerAnswer;
 				sendString("CurP&" + currentPlayer);
 				count = 0;
@@ -315,7 +316,7 @@ public class CatchmindServer implements Constants {
 			}
 			System.out.println("RESULT 도착함");
 
-			if (count == PLAYER_COUNT) {
+			if (count == playerCount) {
 				sendString("RESULT&");
 				count = 0;
 

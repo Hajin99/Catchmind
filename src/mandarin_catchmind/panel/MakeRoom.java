@@ -32,6 +32,7 @@ import mandarin_catchmind.Main;
 import mandarin_catchmind.client.CatchmindClient;
 import mandarin_catchmind.panel.RoomInfo;
 import mandarin_catchmind.server.CatchmindServer;
+import mandarin_catchmind.nonConstants.NonConstants;
 
 public class MakeRoom extends JPanel {
 	private DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -174,19 +175,34 @@ public class MakeRoom extends JPanel {
 		        
 		        makeButton.addActionListener(new ActionListener() {
 		            public void actionPerformed(ActionEvent e) {
-		            	String roomName = nameField.getText(); //방이름
-		            	int portNumberN = Integer.parseInt(portNumber.getText());
-		            	RoomInfo roomInfo = new RoomInfo(roomName, portNumberN, number, chN);
-		            	number++;
-		            	v.add(roomInfo);
-		            	roomList.setListData(v);
-                        nameField.setText(""); // 입력 필드 초기화
-                        portNumber.setText("");
-                        //MyGameScreen myGameScreen = new MyGameScreen(roomName);
-                        //myGameScreen.setVisible(true);
-                        CatchmindClient client = new CatchmindClient(roomName, portNumberN, chN);
-                        
-                        client.setVisible(true);
+		            	Integer[] playerOptions = {2, 3, 4}; // 선택 가능한 인원수
+		                Integer selectedPlayers = (Integer) JOptionPane.showInputDialog(
+		                    null,
+		                    "참여 인원을 선택하세요:",
+		                    "인원수 선택",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    null,
+		                    playerOptions,
+		                    playerOptions[0] // 기본값
+		                );
+
+		                // 사용자가 취소를 누르지 않았을 경우
+		                if (selectedPlayers != null) {
+		                    // 인원수에 따라 동작 수행
+		                    NonConstants.playerCount = selectedPlayers; // 선택된 인원수를 number에 저장
+		                    System.out.println("선택된 인원수: " + NonConstants.playerCount);
+			            	String roomName = nameField.getText(); //방이름
+			            	int portNumberN = Integer.parseInt(portNumber.getText());
+			            	RoomInfo roomInfo = new RoomInfo(roomName, portNumberN, number, chN);
+			            	number++;
+			            	v.add(roomInfo);
+			            	roomList.setListData(v);
+	                        nameField.setText(""); // 입력 필드 초기화
+	                        portNumber.setText("");
+	                        CatchmindClient client = new CatchmindClient(roomName, portNumberN, chN);
+	                        
+	                        client.setVisible(true);
+		            }
 		            }
 		        });
 		        add(makeButton);

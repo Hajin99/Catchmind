@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 
 import mandarin_catchmind.client.CatchmindClient.TimerThread;
 import mandarin_catchmind.constants.Constants;
+import mandarin_catchmind.nonConstants.NonConstants;
 import mandarin_catchmind.panel.GameScreen;
 import mandarin_catchmind.panel.RankFrame;
 import mandarin_catchmind.client.Music;
@@ -50,9 +51,10 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	   private ImageIcon ch1 = new ImageIcon(getClass().getResource("/images/1_2.png"));
 	   private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
 		
+	   private int playerCount = NonConstants.playerCount;
 	   private int myId;
-	   private String[] nicknames = new String[PLAYER_COUNT];
-	   private int[] scores = new int[PLAYER_COUNT];
+	   private String[] nicknames = new String[playerCount];
+	   private int[] scores = new int[playerCount];
 	   private int currentPlayerCount;
 	   private boolean canDraw = true;
 	   private int turnCount = 0;
@@ -170,9 +172,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	               break;
 	            
 	            case ALL_CONNECTED:
-	               myNickName = JOptionPane.showInputDialog("닉네임을 입력하세요");
-	               nameLabelArr[myId].setText(myNickName + "(나)");
-	               writer.println("NICKNAME&" + myNickName + "," + chN);
+	               promptForNickname();
 	               break;
 	            
 	            case NICKNAME:
@@ -304,7 +304,8 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 
 	   //출제자,턴 수,제한시간 표시 및 제시어 받기
 	   public void receiveCurP(String[] parsMessage) {
-	      turnLabel.setText((turnCount+1) + "/10 턴");  
+		   //promptForNickname();
+	       turnLabel.setText((turnCount+1) + "/10 턴");  
 	       topLabel.setText("-");  
 	       paintPanel.repaint();  
 	       timerLabel.setText(SEC + " 초");  
@@ -336,7 +337,7 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	       if (myId == currentPlayerCount) {
 	          
 	          messageTf.setEditable(false);
-	          for (int i=0; i<PLAYER_COUNT; ++i) messageTaArr[i].setText("");  
+	          for (int i=0; i<playerCount; ++i) messageTaArr[i].setText("");  
 	          
 	          canDraw = true;
 
@@ -404,7 +405,8 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 		    RankFrame rankFrame = RankFrame.getInstance(resultMessage);
 		    rankFrame.setVisible(true);
 
-		    // 이전 게임 화면을 숨긴다
+		    // 음악 종료후, 이전 게임 화면 숨김
+		    m.mStop();
 		    this.setVisible(false);  // 현재 게임 화면을 숨깁니다.
 		    this.dispose();  // 게임 화면을 완전히 종료합니다.
 		}
@@ -614,6 +616,16 @@ public class CatchmindClient extends GameScreen implements Runnable, Constants {
 	      }
 	   }
 
+	   private void promptForNickname() {
+		    myNickName = JOptionPane.showInputDialog("닉네임을 입력하세요");
+		    if (myNickName == null || myNickName.trim().isEmpty()) {
+		        myNickName = "익명"; // 기본 닉네임 설정
+		    }
+		    nameLabelArr[myId].setText(myNickName + "(나)");
+		    writer.println("NICKNAME&" + myNickName + "," + chN);
+		}
+	   
+	   
 	   @Override
 	   public void keyTyped(KeyEvent e) {}
 	   @Override

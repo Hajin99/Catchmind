@@ -77,6 +77,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	
 	protected JTextArea newChatArea = new JTextArea();
     protected JTextField newMessageTf = new JTextField();
+    protected Music m = new Music();
     
     private ImageIcon newSendBtnIcon = new ImageIcon(getClass().getResource("/images/button.png"));
     JButton newSendBtn = new JButton("보내기", newSendBtnIcon);
@@ -90,7 +91,7 @@ public abstract class GameScreen extends JFrame implements ActionListener, Mouse
 	private ImageIcon ch2 = new ImageIcon(getClass().getResource("/images/2_2.png"));
 	private ImageIcon onA = new ImageIcon(getClass().getResource("/images/on.png"));
 	private ImageIcon offA = new ImageIcon(getClass().getResource("/images/off.png"));
-	private Music m = new Music();
+	
 	private int onOff = 0;
 	
 	//채팅창 패널
