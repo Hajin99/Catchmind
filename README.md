@@ -26,6 +26,6 @@
 https://github.com/user-attachments/assets/9f34bec3-4427-49ed-9211-67110a7ef693
 
 ##  💻 개발 환경
- - 개발 언어: Java,Python, React native
+ - 개발 언어: Java
  - 개발 도구: Eclipes IDE
  - 주요기술: Java WebSocket
